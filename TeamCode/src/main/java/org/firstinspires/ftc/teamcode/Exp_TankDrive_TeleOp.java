@@ -127,7 +127,7 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         leftGrab.setDirection(Servo.Direction.FORWARD);
         rightGrab.setDirection(Servo.Direction.FORWARD);

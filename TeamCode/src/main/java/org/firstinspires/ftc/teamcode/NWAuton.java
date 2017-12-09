@@ -258,16 +258,17 @@ public class NWAuton extends LinearOpMode {
         //JEWEL SENSOR PATHS
         if (colorIsRed) {
             //NOTE: SENSOR FACES BACKWARDS
-            encoderDrive(0.13, 3, 3, 4.0);
+            encoderDrive(0.11, 3, 3, 4.0);
             sleep(500);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
 
         } else if (!colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -4, -4, 4.0);
+            encoderDrive(DRIVE_SPEED, -3, -3, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
+            sleep(750);
+            encoderDrive(DRIVE_SPEED, 3, 3, 4.0);
         }
 
 
@@ -289,17 +290,20 @@ public class NWAuton extends LinearOpMode {
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
-                encoderDrive(DRIVE_SPEED, -6, -6, 5.0);
+                //Pick up front arm.
+                moveArm(DRIVE_SPEED,2000,5);
+                //Drive off balance stone
+                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                //Align with Balance Stone
+                encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
                 sleep(250);
 
-                moveArm(DRIVE_SPEED, -150, 10.0);
 
                 encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
-                encoderDrive(DRIVE_SPEED, 16, 16, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 16, 16, 10.0);
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
@@ -310,18 +314,21 @@ public class NWAuton extends LinearOpMode {
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
-                encoderDrive(DRIVE_SPEED, -6, -6, 5.0);
+                //Pick up front arm.
+                moveArm(DRIVE_SPEED,2000,5);
+                //Drive off Balance Stone
+                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                //Align With balance stone
+                encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
                 sleep(250);
 
-                moveArm(DRIVE_SPEED, -150, 10.0);
 
                 encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
 
-                encoderDrive(DRIVE_SPEED, 23, 23, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 23, 23, 10.0);
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
@@ -331,20 +338,26 @@ public class NWAuton extends LinearOpMode {
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
+                //Pick up front arm.
+                moveArm(DRIVE_SPEED,2000,5);
+                // Get off Balance Stone
+                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                //Align onto balance stone
                 encoderDrive(DRIVE_SPEED, -6, -6, 5.0);
                 sleep(250);
 
-                moveArm(DRIVE_SPEED, -150, 10.0);
-
+                //Forward off the alignment
                 encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
+                //Turn to align with wall
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
+                //Aligning with wall
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
-
-                encoderDrive(DRIVE_SPEED, 31, 31, 10.0);
+                //Drive to cryptobox from wall
+                encoderDrive(DRIVE_SPEED*1.5, 31, 31, 10.0);
+                //Turn towards column
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-
+                //drive into cryptobox
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
 
 
@@ -355,11 +368,14 @@ public class NWAuton extends LinearOpMode {
             }
             else caseVumark = '?';
         } else {
-            encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
-            encoderDrive(DRIVE_SPEED, -6, -6, 5.0);
+            //Pick up front arm.
+            moveArm(DRIVE_SPEED,2000,5);
+            //Get off Balance stone
+            encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+            //Align onto balance stone
+            encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
             sleep(250);
 
-            moveArm(DRIVE_SPEED, -150, 10.0);
 
             encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
             encoderDrive(TURN_SPEED, 12, -12, 6.0);
