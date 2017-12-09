@@ -100,6 +100,8 @@ public class NEAuton extends LinearOpMode {
 
     //Non-static vars
 
+    //Outer Set of Servo positions
+
     double leftOpenPos = 0.19;
     double rightOpenPos = 0.93;
 
@@ -119,6 +121,8 @@ public class NEAuton extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    //Autonomous pathing speeds
     static final double     DRIVE_SPEED             = (0.2)*1.5;
     static final double     TURN_SPEED              = 0.15;
 
@@ -209,8 +213,12 @@ public class NEAuton extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
+
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+
         //MORE VUFORIA INITS
         relicTrackables.activate();
 
@@ -220,9 +228,13 @@ public class NEAuton extends LinearOpMode {
 
 
         //START ACTIONS
+
+        //Grabs the block
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
+
+        //Moves arm/slider to certain position
         moveArm(DRIVE_SPEED, -500, 10.0);
 
 
@@ -232,10 +244,10 @@ public class NEAuton extends LinearOpMode {
 
         //Knocking off the Jewel (RED ALLIANCE)!!!
 
-
-
         //NOTE:SWIVEL ARM DOWN
         jewelStick.setPosition(jewelPos1);
+
+        //Waits for 1 second. Possibly add more to allow Vuforia to read pictograph.
         sleep(1000);
 
         //COLOR SENSOR FINDS COLOR
@@ -289,44 +301,62 @@ public class NEAuton extends LinearOpMode {
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
+
+                //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
+                //FORWARDS TO ALIGN
                 encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
                 sleep(250);
 
 
+                //BACKWARDS # Inches
                 encoderDrive(DRIVE_SPEED, - (7+7), - (7 + 7), 10.0);
+                //RIGHT Turn - Rear Facing East Wall
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
+                //BACKWARDS TO ALIGN ON WALL
                 encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
 
 
+                //LOWER BLOCK (to lessen bounce when it drops)
                 moveArm(DRIVE_SPEED, -150, 10.0);
 
-
+                //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
                 encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
+                //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 11.5, -12, 6.0);
 
+                //FORWARD INTO CRYPTOBOX
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
 
 
-
-
                 caseVumark = 'C';
+
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
+                //FORWARDS TO ALIGN
                 encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
                 sleep(250);
 
 
+                //BACKWARDS # Inches
                 encoderDrive(DRIVE_SPEED, - (7+7), - (7 + 7), 10.0);
+                //RIGHT Turn - Rear Facing East Wall
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
+                //BACKWARDS TO ALIGN ON WALL
                 encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
 
+
+                //LOWER BLOCK (to lessen bounce when it drops)
                 moveArm(DRIVE_SPEED, -150, 10.0);
 
+                //FORWARD ## INCHES TO LINE UP WITH RIGHT
                 encoderDrive(DRIVE_SPEED, 23+2, 23+2, 10.0);
+                //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 11.5, -12, 6.0);
 
+                //FORWARD INTO CRYPTOBOX
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
 
 
@@ -334,49 +364,61 @@ public class NEAuton extends LinearOpMode {
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
+                //FORWARDS TO ALIGN
                 encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-
                 sleep(250);
 
 
-                encoderDrive(DRIVE_SPEED, -(7+7), -(7 + 7), 10.0);
+                //BACKWARDS # Inches
+                encoderDrive(DRIVE_SPEED, - (7+7), - (7 + 7), 10.0);
+                //RIGHT Turn - Rear Facing East Wall
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
+                //BACKWARDS TO ALIGN ON WALL
                 encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
 
+
+                //LOWER BLOCK (to lessen bounce when it drops)
                 moveArm(DRIVE_SPEED, -150, 10.0);
 
 
-
+                //FORWARDS ## INCHES TO LINE UP WITH LEFT COLUMN
                 encoderDrive(DRIVE_SPEED, 31+2, 31+2, 10.0);
+                //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 11.5, -12, 6.0);
 
+                //FORWARD INTO CRYPTOBOX
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
-
-
-
-
 
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
+            //BACKWARDS OF BALNACE STONE
             encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
+            //FORWARDS TO ALIGN
             encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
             sleep(250);
 
 
+            //BACKWARDS # Inches
             encoderDrive(DRIVE_SPEED, - (7+7), - (7 + 7), 10.0);
+            //RIGHT Turn - Rear Facing East Wall
             encoderDrive(TURN_SPEED, 12, -12, 6.0);
+            //BACKWARDS TO ALIGN ON WALL
             encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
 
 
+            //LOWER BLOCK (to lessen bounce when it drops)
             moveArm(DRIVE_SPEED, -150, 10.0);
 
-
-            encoderDrive(DRIVE_SPEED, 16, 16, 10.0);
+            //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
+            encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
+            //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
             encoderDrive(TURN_SPEED, 11.5, -12, 6.0);
 
+            //FORWARD INTO CRYPTOBOX
             encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
 
 
@@ -385,23 +427,6 @@ public class NEAuton extends LinearOpMode {
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
 
-        /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
-        encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
-        encoderDrive(DRIVE_SPEED, 10, 10, 4.0);
-
-
-
-
-
-
-
-
-
-        sleep(250);
-
-        encoderDrive(DRIVE_SPEED, -16,-16, 10.0);
-        encoderDrive(DRIVE_SPEED, 8, -8, 6.0);
-        */
 
 
         //RELEASE AND BACK UP
@@ -410,6 +435,7 @@ public class NEAuton extends LinearOpMode {
         rightGrab.setPosition(rightOpenPos);
         sleep(1000);     // pause for servos to move
 
+        //REVERSE 2 Inches so you don't touch the block (DQ points)
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);
 
 
@@ -418,7 +444,7 @@ public class NEAuton extends LinearOpMode {
     }
 
     /*
-     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position

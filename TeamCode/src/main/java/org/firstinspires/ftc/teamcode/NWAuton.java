@@ -307,7 +307,7 @@ public class NWAuton extends LinearOpMode {
 
 
 
-                caseVumark = 'C';
+                caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
@@ -328,7 +328,7 @@ public class NWAuton extends LinearOpMode {
 
 
 
-                caseVumark = 'L';
+                caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 encoderDrive(DRIVE_SPEED*1.3, 20, 20, 10.0);
