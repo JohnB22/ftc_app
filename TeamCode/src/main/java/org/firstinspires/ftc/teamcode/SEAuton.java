@@ -284,7 +284,7 @@ public class SEAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF THE BALANCE STONE
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
                 //FORWARDS TO ALIGN WITH BALANCE STONE
@@ -304,7 +304,7 @@ public class SEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Backwards off Balance Stone
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
                 //Forward to line up on balance stone
@@ -324,7 +324,7 @@ public class SEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Backwards off Balance Stone
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
                 //Line up on balance stone
@@ -344,6 +344,8 @@ public class SEAuton extends LinearOpMode {
             }
             else caseVumark = '?';
         } else {
+            //Pick up front arm.
+            moveArm(DRIVE_SPEED*1.5,2500,5);
             encoderDrive(DRIVE_SPEED*1.2, -20, -20, 10.0);
             encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
             sleep(250);

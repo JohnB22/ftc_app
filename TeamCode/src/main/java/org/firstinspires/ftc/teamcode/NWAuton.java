@@ -264,10 +264,10 @@ public class NWAuton extends LinearOpMode {
             jewelStick.setPosition(jewelPos2);
 
         } else if (!colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -3, -3, 4.0);
+            encoderDrive(DRIVE_SPEED, -2.5, -2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            sleep(750);
+            sleep(500);
             encoderDrive(DRIVE_SPEED, 3, 3, 4.0);
         }
 
@@ -291,7 +291,7 @@ public class NWAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Drive off balance stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align with Balance Stone
@@ -315,7 +315,7 @@ public class NWAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Drive off Balance Stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align With balance stone
@@ -339,7 +339,7 @@ public class NWAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 // Get off Balance Stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align onto balance stone
@@ -369,7 +369,7 @@ public class NWAuton extends LinearOpMode {
             else caseVumark = '?';
         } else {
             //Pick up front arm.
-            moveArm(DRIVE_SPEED,2000,5);
+            moveArm(DRIVE_SPEED*1.5,2500,5);
             //Get off Balance stone
             encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
             //Align onto balance stone

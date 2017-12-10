@@ -291,11 +291,11 @@ public class SWAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Get off balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
                 //Align with balance stone
-                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
+                encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
                 sleep(250);
 
                 //Drive towards correct position
@@ -309,15 +309,15 @@ public class SWAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Get off balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
                 //Align with balance stone
-                encoderDrive(DRIVE_SPEED, -7, -7, 5.0);
+                encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
                 sleep(250);
 
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED, 13, 13, 10.0);
+                encoderDrive(DRIVE_SPEED*1.3, 13, 13, 10.0);
                 //Turn towards cryptobox
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
                 //Place into the box
@@ -328,15 +328,15 @@ public class SWAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //Get off the balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+                encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
                 //Align on the balance stone
-                encoderDrive(DRIVE_SPEED, -7, -7, 5.0);
+                encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
                 sleep(250);
 
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED, 20,20,10.0);
+                encoderDrive(DRIVE_SPEED*1.4, 20,20,10.0);
                 //Turn into cryptobox
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
                 //Drive into the box
@@ -348,11 +348,11 @@ public class SWAuton extends LinearOpMode {
             else caseVumark = '?';
         } else {
             //Pick up front arm.
-            moveArm(DRIVE_SPEED*1.2,2000,5);
+            moveArm(DRIVE_SPEED*1.5,2500,5);
             //Drive off the balance stone
-            encoderDrive(DRIVE_SPEED, 20, 20, 10.0);
+            encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
             //Align with the balance stone
-            encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
+            encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
             sleep(250);
 
             //Drive towards the correct position

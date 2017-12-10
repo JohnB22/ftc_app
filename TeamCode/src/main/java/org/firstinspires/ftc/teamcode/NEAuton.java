@@ -302,7 +302,7 @@ public class NEAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -333,7 +333,7 @@ public class NEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -364,7 +364,7 @@ public class NEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -395,7 +395,7 @@ public class NEAuton extends LinearOpMode {
             else caseVumark = '?';
         } else {
             //Pick up front arm.
-            moveArm(DRIVE_SPEED,2000,5);
+            moveArm(DRIVE_SPEED*1.5,2500,5);
             //BACKWARDS OF BALNACE STONE
             encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
             //FORWARDS TO ALIGN
