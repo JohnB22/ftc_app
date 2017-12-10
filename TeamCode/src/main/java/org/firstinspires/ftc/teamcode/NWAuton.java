@@ -295,15 +295,15 @@ public class NWAuton extends LinearOpMode {
                 //Drive off balance stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align with Balance Stone
-                encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
+                encoderDrive(DRIVE_SPEED*0.7, -10, -10, 5.0);
                 sleep(250);
 
 
-                encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
+                encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
-                encoderDrive(DRIVE_SPEED*1.5, 16, 16, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 19, 19, 10.0);
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
@@ -319,16 +319,16 @@ public class NWAuton extends LinearOpMode {
                 //Drive off Balance Stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align With balance stone
-                encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
+                encoderDrive(DRIVE_SPEED*0.7, -10, -10, 5.0);
                 sleep(250);
 
 
-                encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
+                encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
 
-                encoderDrive(DRIVE_SPEED*1.5, 23, 23, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 25, 25, 10.0);
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
@@ -343,18 +343,18 @@ public class NWAuton extends LinearOpMode {
                 // Get off Balance Stone
                 encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
                 //Align onto balance stone
-                encoderDrive(DRIVE_SPEED, -6, -6, 5.0);
+                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
                 sleep(250);
 
                 //Forward off the alignment
-                encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
+                encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
                 //Turn to align with wall
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
                 //Aligning with wall
                 encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
                 //Drive to cryptobox from wall
-                encoderDrive(DRIVE_SPEED*1.5, 31, 31, 10.0);
+                encoderDrive(DRIVE_SPEED*1.7, 33, 33, 10.0);
                 //Turn towards column
                 encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
                 //drive into cryptobox
@@ -373,15 +373,15 @@ public class NWAuton extends LinearOpMode {
             //Get off Balance stone
             encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
             //Align onto balance stone
-            encoderDrive(DRIVE_SPEED*0.7, -6, -6, 5.0);
+            encoderDrive(DRIVE_SPEED*0.7, -10, -10, 5.0);
             sleep(250);
 
 
-            encoderDrive(DRIVE_SPEED, 7, 7, 10.0);
+            encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
             encoderDrive(TURN_SPEED, 12, -12, 6.0);
             encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
-            encoderDrive(DRIVE_SPEED, 16, 16, 10.0);
+            encoderDrive(DRIVE_SPEED*1.5, 18, 18, 10.0);
             encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
             encoderDrive(DRIVE_SPEED, 6, 6, 10.0);

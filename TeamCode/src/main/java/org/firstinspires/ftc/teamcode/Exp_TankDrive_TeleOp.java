@@ -58,8 +58,8 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
     double leftClosePos2 = 0.30;
     double rightClosePos2 = 0.49;
 
-    double leftHalfPos2;
-    double rightHalfPos2;
+    double leftHalfPos2 = 0.50;
+    double rightHalfPos2 = 0.25;
 
 
 
