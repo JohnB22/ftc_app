@@ -235,7 +235,7 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
             armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             armPower = gamepad2.right_stick_y;
-            armPower = Range.scale(armPower, -1.0, 1.0, -0.40, 0.40);
+            armPower = Range.scale(armPower, -1.0, 1.0, -0.60, 0.40);
 
 
 

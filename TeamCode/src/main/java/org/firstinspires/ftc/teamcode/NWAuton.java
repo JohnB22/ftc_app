@@ -411,10 +411,10 @@ public class NWAuton extends LinearOpMode {
 
 
         //RELEASE AND BACK UP
-        sleep(1000);
+        sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
-        sleep(1000);     // pause for servos to move
+        sleep(500);     // pause for servos to move
 
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);
 

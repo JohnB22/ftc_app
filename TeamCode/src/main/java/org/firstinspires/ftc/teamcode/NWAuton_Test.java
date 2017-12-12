@@ -74,9 +74,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="VUFORIA RED NorthEast Auton TEST", group="Red")
+@Autonomous(name="VUFORIA BLUE NorthWest Auton TEST", group="Blue")
 //@Disabled
-public class NEAuton_TEST extends LinearOpMode {
+public class NWAuton_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwarePushbot robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -100,8 +100,6 @@ public class NEAuton_TEST extends LinearOpMode {
 
     //Non-static vars
 
-    //Outer Set of Servo positions
-
     double leftOpenPos = 0.19;
     double rightOpenPos = 0.93;
 
@@ -121,9 +119,7 @@ public class NEAuton_TEST extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-
-    //Autonomous pathing speeds
-    static final double     DRIVE_SPEED             = (0.2)*1.5;
+    static final double     DRIVE_SPEED             = 0.2 * 1.5;
     static final double     TURN_SPEED              = 0.15;
 
 
@@ -213,12 +209,8 @@ public class NEAuton_TEST extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-
         //MORE VUFORIA INITS
         relicTrackables.activate();
 
@@ -228,13 +220,9 @@ public class NEAuton_TEST extends LinearOpMode {
 
 
         //START ACTIONS
-
-        //Grabs the block
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-
-        //Moves arm/slider to certain position
         moveArm(DRIVE_SPEED, -500, 10.0);
 
 
@@ -242,12 +230,12 @@ public class NEAuton_TEST extends LinearOpMode {
 
 
 
-        //Knocking off the Jewel (RED ALLIANCE)!!!
+        //Knocking off the Jewel (BLUE ALLIANCE)!!!
+
+
 
         //NOTE:SWIVEL ARM DOWN
         jewelStick.setPosition(jewelPos1);
-
-        //Waits for 1 second. Possibly add more to allow Vuforia to read pictograph.
         sleep(1000);
 
         //COLOR SENSOR FINDS COLOR
@@ -268,45 +256,37 @@ public class NEAuton_TEST extends LinearOpMode {
 
 
         //JEWEL SENSOR PATHS
-        if (!colorIsRed) {
-            //NOTE: SENSOR FACES FORWARDS
-            encoderDrive(0.13, 3, 3, 4.0);
+        if (colorIsRed) {
+            //NOTE: SENSOR FACES BACKWARDS
+            encoderDrive(0.11, 3, 3, 4.0);
             sleep(500);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
 
-        } else if (colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -4, -4, 4.0);
+        } else if (!colorIsRed) {
+            encoderDrive(DRIVE_SPEED, -2.5, -2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
+            sleep(500);
+            encoderDrive(DRIVE_SPEED, 3, 3, 4.0);
         }
 
 
-
-
-
-
-        // NON VUFORIA SPECIFIC BLOCK PLACEMENT PATHING
-
-
-        //Move Slider up
-        moveArm(DRIVE_SPEED*1.5, 2500, 10);
-        //BACKWARDS OFF BALNACE STONE
-        encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
-        //FORWARDS TO ALIGN
-        encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+        //Non Vumark Paths
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
+        //Drive off balance stone
+        encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
+        //Align with Balance Stone
+        encoderDrive(DRIVE_SPEED*0.7, -10, -10, 5.0);
         sleep(250);
 
-
-        //BACKWARDS # Inches
-        encoderDrive(DRIVE_SPEED, - (7+4), - (7 + 4), 10.0);
-        //RIGHT Turn - Rear Facing East Wall
+        //Come off alignment forward
+        encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
+        //Turn to back into wall
         encoderDrive(TURN_SPEED, 12, -12, 6.0);
-        //BACKWARDS TO ALIGN ON WALL
-        encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
-
-
+        //Back into wall
+        encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
 
 
         //VUMARK PATHS
@@ -319,56 +299,39 @@ public class NEAuton_TEST extends LinearOpMode {
         }
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            if (vuMark == RelicRecoveryVuMark.RIGHT) {
-
-                //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
-                encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
-
-                caseVumark = 'C';
-            }
-            else if (vuMark == RelicRecoveryVuMark.CENTER) {
-
-                //FORWARD ## INCHES TO LINE UP WITH RIGHT
-                encoderDrive(DRIVE_SPEED*1.2, 23+2, 23+2, 10.0);
-
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                //Drive to cryptobox from wall
+                encoderDrive(DRIVE_SPEED*1.5, 19, 19, 10.0);
                 caseVumark = 'L';
             }
-            else if (vuMark == RelicRecoveryVuMark.LEFT) {
-
-                //FORWARDS ## INCHES TO LINE UP WITH LEFT COLUMN
-                encoderDrive(DRIVE_SPEED*1.5, 31+2, 31+2, 10.0);
-
+            else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                //Drive to cryptobox from wall
+                encoderDrive(DRIVE_SPEED*1.5, 25, 25, 10.0);
+                caseVumark = 'C';
+            }
+            else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                //Drive to cryptobox from wall
+                encoderDrive(DRIVE_SPEED*1.7, 33, 33, 10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-
-            //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
-            encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
+            encoderDrive(DRIVE_SPEED*1.5, 19, 19, 10.0);
         }
-
-
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
-
-
-        //AFTER IN FRONT OF CORRECT COLUMN
-
-        //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
-        encoderDrive(TURN_SPEED, 12, -12, 6.0);
-
-        //FORWARD INTO CRYPTOBOX
+        //After aligned with the correct box..
+        //Turn to face it
+        encoderDrive(TURN_SPEED, -12, 12, 6.0);
+        //Go into the column
         encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
-
-
         //RELEASE AND BACK UP
-        sleep(500);
+        sleep(1000);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
-        sleep(500);     // pause for servos to move
-
-        //REVERSE 2 Inches so you don't touch the block (DQ points)
+        sleep(1000);     // pause for servos to move
+        //Back out of position (DQ Points)
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);
 
 
@@ -376,11 +339,8 @@ public class NEAuton_TEST extends LinearOpMode {
         telemetry.update();
     }
 
-
-
-
     /*
-     *  Method to perform a relative move, based on encoder counts.
+     *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position

@@ -66,7 +66,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="SB RED RIGHT Auton", group="RED")
-//@Disabled
+@Disabled
 public class StateBarnAutonomous extends LinearOpMode {
 
     /* Declare OpMode members. */

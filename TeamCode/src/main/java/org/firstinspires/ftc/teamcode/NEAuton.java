@@ -351,7 +351,7 @@ public class NEAuton extends LinearOpMode {
 
 
                 //FORWARD ## INCHES TO LINE UP WITH RIGHT
-                encoderDrive(DRIVE_SPEED, 23+2, 23+2, 10.0);
+                encoderDrive(DRIVE_SPEED*1.2, 23+2, 23+2, 10.0);
                 //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
 
@@ -383,7 +383,7 @@ public class NEAuton extends LinearOpMode {
 
 
                 //FORWARDS ## INCHES TO LINE UP WITH LEFT COLUMN
-                encoderDrive(DRIVE_SPEED*1.2, 31+2, 31+2, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 31+2, 31+2, 10.0);
                 //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
 
