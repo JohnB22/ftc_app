@@ -182,6 +182,8 @@ public class SEAuton extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -294,17 +296,18 @@ public class SEAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //BACKWARDS ## INCHES TO LINE UP WITH RIGHT COLUMN
-                encoderDrive(DRIVE_SPEED*1.2, -(4+8), -(4+8), 10.0);
+                //Changed 4+8 to 4+9 due to missing slightly to the right. Need to go further on right vumark.
+                encoderDrive(DRIVE_SPEED*1.2, -(4+9), -(4+9), 10.0);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED, -(11+8), -(11+8), 10.0);
+                encoderDrive(DRIVE_SPEED, -(11+9), -(11+9), 10.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED*1.5, -(19.5+8), -(19.5+8), 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, -(19.5+9), -(19.5+9), 10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';

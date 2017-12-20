@@ -52,14 +52,20 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
     double leftHalfPos = leftClosePos - leftOpenPos;
     double rightHalfPos = rightOpenPos - rightClosePos;
 
+    double leftPushPos = 0.40;
+    double rightPushPos = 0.75;
+
     double leftOpenPos2 = 0.79;
-    double rightOpenPos2 = 0.01;
+    double rightOpenPos2 = 0.00;
 
     double leftClosePos2 = 0.30;
     double rightClosePos2 = 0.49;
 
-    double leftHalfPos2 = 0.50;
-    double rightHalfPos2 = 0.25;
+    double leftHalfPos2 = 0.51;
+    double rightHalfPos2 = 0.24;
+
+    double leftPushPos2 = 0.60;
+    double rightPushPos2 = 0.12;
 
 
 
@@ -187,7 +193,6 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
             //Tank Mode  - Simpler to program, harder to drive straight and slow.
             leftPower = -gamepad1.left_stick_y*0.85;
             rightPower = -gamepad1.right_stick_y*0.85;
-
             //Tank Mode + Right trigger for optional gas! Fix the issue :P
             leftPower = Range.clip(-gamepad1.left_stick_y + gamepad1.right_trigger + -gamepad1.left_trigger, -1.0, 1.0);
             rightPower = Range.clip(-gamepad1.right_stick_y + gamepad1.right_trigger + -gamepad1.left_trigger, -1.0, 1.0);
@@ -205,10 +210,10 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
 
             //Jewel Stick controls
 
-            if (gamepad2.dpad_down) {
+            if (gamepad2.dpad_left) {
                 jewelStick.setPosition(jewelPos1);
 
-            } else if (gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_right) {
                 jewelStick.setPosition(jewelPos2);
             }
 
@@ -324,6 +329,15 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
             if(gamepad2.b) {
                 leftGrab2.setPosition(leftHalfPos2);
                 rightGrab2.setPosition(rightHalfPos2);
+            }
+
+            if (gamepad2.dpad_down){
+                leftGrab2.setPosition(leftPushPos2);
+                rightGrab2.setPosition(rightPushPos2);
+            }
+            if (gamepad2.dpad_up){
+                leftGrab.setPosition(leftPushPos);
+                rightGrab.setPosition(rightPushPos);
             }
 
 
