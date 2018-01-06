@@ -182,6 +182,8 @@ public class SEAuton extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -270,6 +272,16 @@ public class SEAuton extends LinearOpMode {
             encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
         }
 
+        //Non-Vumark Path
+
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
+        //BACKWARDS OF THE BALANCE STONE
+        encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
+        //FORWARDS TO ALIGN WITH BALANCE STONE
+        encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+        sleep(250);
+
 
 
         //VUMARK PATHS
@@ -283,82 +295,37 @@ public class SEAuton extends LinearOpMode {
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //BACKWARDS OF THE BALANCE STONE
-                encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
-                //FORWARDS TO ALIGN WITH BALANCE STONE
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-                sleep(250);
-
-
                 //BACKWARDS ## INCHES TO LINE UP WITH RIGHT COLUMN
-                encoderDrive(DRIVE_SPEED*1.2, -(4+8), -(4+8), 10.0);
-                //LEFT TURN TO FACE CRYPTOBOX
-                encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-
-                //FORWARD ## INCHES INTO CRYPTOBOX
-                encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
+                //Changed 4+8 to 4+9 due to missing slightly to the right. Need to go further on right vumark.
+                encoderDrive(DRIVE_SPEED*1.2, -(4+9), -(4+9), 10.0);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //Backwards off Balance Stone
-                encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
-                //Forward to line up on balance stone
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-                sleep(250);
-
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED, -(11+8), -(11+8), 10.0);
-                //Turn towards cryptobox
-                encoderDrive(TURN_SPEED, -12, 12, 6.0);
-
-                //drive into Cryptobox
-                encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
-
+                encoderDrive(DRIVE_SPEED, -(11+9), -(11+9), 10.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //Backwards off Balance Stone
-                encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
-                //Line up on balance stone
-                encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-                sleep(250);
-
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED*1.5, -(19.5+8), -(19.5+8), 10.0);
-                //Turn towards cryptobox
-                encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-                //Forward to cryptobox
-                encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
-
-
+                encoderDrive(DRIVE_SPEED*1.5, -(19.5+9), -(19.5+9), 10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            encoderDrive(DRIVE_SPEED*1.2, -20, -20, 10.0);
-            encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
-            sleep(250);
-
             encoderDrive(DRIVE_SPEED, -(4+9), -(4+9), 10.0);
-            encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-
-            moveArm(DRIVE_SPEED, -150, 10.0);
-
-
-            encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
+
+
+        //Place into the boxy thing
+
+        //LEFT TURN TO FACE CRYPTOBOX
+        encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
+
+        //FORWARD ## INCHES INTO CRYPTOBOX
+        encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
 
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);

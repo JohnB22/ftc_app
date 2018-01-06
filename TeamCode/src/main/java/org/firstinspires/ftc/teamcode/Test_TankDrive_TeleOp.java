@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -14,12 +13,12 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 
-@TeleOp(name="FAKE DRIVE (DON'T CLICK ALANA)", group="Linear Opmode")
+@TeleOp(name="ACTUAL DRIVE", group="Linear Opmode")
 
 //Comment out @Disabled to add this OpMode to the Driver Station List!
 //@Disabled
 
-public class Exp_TankDrive_TeleOp extends LinearOpMode {
+public class Test_TankDrive_TeleOp extends LinearOpMode {
 
     //Declare OpMode members/variables (Motors, servos, etc.)
 
@@ -27,8 +26,8 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
-    private DcMotor armMotor = null;
     private DcMotor wheelMotor = null;
+    private DcMotor armMotor = null;
 
 
     private Servo leftGrab = null;
@@ -37,12 +36,13 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
     private Servo leftGrab2 = null;
     private Servo rightGrab2 = null;
 
+
     private Servo jewelStick = null;
 
 
     private DcMotor relicSlideMotor = null;
 
-    private CRServo relicArmServo = null;
+    private Servo relicArmServo = null;
 
     private Servo relicGrabServo = null;
 
@@ -96,8 +96,14 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
 
     //Relic Grab Positions
 
-    double relicGrabOpen = 0.01;
-    double relicGrabClosed = 0.99;
+    double relicGrabOpen = 0;
+    double relicGrabClosed = 0.75;
+
+    double relicArmPosHalfDown = 0.66;
+    double relicArmPosDown = 0.77;
+    double relicArmPosUp = 0;
+
+    double relicPos = 0;
 
 
 
@@ -109,7 +115,7 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
     //private Context context = hardwareMap.appContext;
 
 
-    @Override
+    @Override 
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -131,11 +137,13 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
 
         jewelStick = hardwareMap.get(Servo.class, "jewel_servo");
         //Rear Wheeled motor
+
+        //Rear Wheeled motor
         wheelMotor = hardwareMap.get(DcMotor.class, "rear_push");
 
 
         relicSlideMotor = hardwareMap.get(DcMotor.class, "relic_slide");
-        relicArmServo = hardwareMap.get(CRServo.class, "relic_continuous");
+        relicArmServo = hardwareMap.get(Servo.class, "relic_continuous");
 
         relicGrabServo = hardwareMap.get(Servo.class, "relic_grab");
 
@@ -152,7 +160,6 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
 
         leftGrab2.setDirection(Servo.Direction.FORWARD);
         rightGrab2.setDirection(Servo.Direction.FORWARD);
-
         wheelMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -163,6 +170,7 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
         telemetry.update();
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Rear Wheel running with Encoders
         wheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //Rear Wheel running with Encoders
         wheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -320,29 +328,24 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
                 rightGrab.setPosition(rightPushPos);
             }
 
-            double wheelMotorPower = gamepad2.right_trigger + -gamepad2.left_trigger;
-            wheelMotorPower = Range.scale(wheelMotorPower, -1, 1, -0.25, 0.25);
 
-            wheelMotor.setPower(wheelMotorPower);
 
 
             //Relic Slide & Arm controls
 
             if (gamepad2.left_bumper) {
                 relicSlidePower = gamepad2.left_stick_y;
-                relicSlidePower = Range.scale(relicSlidePower, -1.0, 1.0, -0.60, 0.40);
+                relicSlidePower = Range.scale(relicSlidePower, -1.0, 1.0, -1.0, 1.0);
 
                 //Send calculated power to arm Motor
                 relicSlideMotor.setPower(relicSlidePower);
-            } else if (gamepad2.right_bumper) {
-                relicArmPower = gamepad2.left_stick_y;
-                relicArmPower = Range.scale(relicArmPower, -1.0, 1.0, -0.60, 0.40);
-
-                //Send Calculated power to Servo
-                relicArmServo.setPower(relicArmPower);
-
+            } else if (gamepad2.right_stick_button) {
+                relicArmServo.setPosition(relicArmPosHalfDown);
+            }else if (gamepad2.left_stick_button){
+                relicArmServo.setPosition(relicArmPosDown);
+            }else if (gamepad2.right_bumper){
+                relicArmServo.setPosition(relicArmPosUp);
             } else {
-                relicArmServo.setPower(0);
                 relicSlideMotor.setPower(0);
             }
 
@@ -352,6 +355,11 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
             } if (gamepad1.a) {
                 relicGrabServo.setPosition(relicGrabClosed);
             }
+
+            double wheelMotorPower = gamepad2.right_trigger + -gamepad2.left_trigger;
+            wheelMotorPower = Range.scale(wheelMotorPower, -1, 1, -0.25, 0.25);
+
+            wheelMotor.setPower(wheelMotorPower);
 
 
 

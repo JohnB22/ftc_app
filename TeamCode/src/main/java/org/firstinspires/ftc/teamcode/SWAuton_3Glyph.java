@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -75,9 +74,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="VUFORIA RED NorthEast Auton", group="Red")
+@Autonomous(name="BLUE SouthWest Auton 3-GLYPH", group="Blue")
 //@Disabled
-public class NEAuton_TEST extends LinearOpMode {
+public class SWAuton_3Glyph extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwarePushbot robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -93,6 +92,9 @@ public class NEAuton_TEST extends LinearOpMode {
     private Servo leftGrab = null;
     private Servo rightGrab = null;
 
+    private Servo leftGrab2 = null;
+    private Servo rightGrab2 = null;
+
     //Jewels stuff
     private Servo jewelStick = null;
 
@@ -101,8 +103,6 @@ public class NEAuton_TEST extends LinearOpMode {
 
     //Non-static vars
 
-    //Outer Set of Servo positions
-
     double leftOpenPos = 0.19;
     double rightOpenPos = 0.93;
 
@@ -110,8 +110,17 @@ public class NEAuton_TEST extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
-    double jewelPos2 = 0.25;
+    double jewelPos1 = 0.93;
+    double jewelPos2 = 0.13;
+
+    double leftOpenPos2 = 0.79;
+    double rightOpenPos2 = 0.00;
+
+    double leftPushPos = 0.40;
+    double rightPushPos = 0.75;
+
+    double leftPushPos2 = 0.60;
+    double rightPushPos2 = 0.12;
 
     boolean grabberClosed;
 
@@ -122,9 +131,7 @@ public class NEAuton_TEST extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-
-    //Autonomous pathing speeds
-    static final double     DRIVE_SPEED             = (0.2)*1.5;
+    static final double     DRIVE_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.15;
 
 
@@ -147,6 +154,9 @@ public class NEAuton_TEST extends LinearOpMode {
 
         leftGrab = hardwareMap.get(Servo.class, "left_grab");
         rightGrab = hardwareMap.get(Servo.class, "right_grab");
+
+        leftGrab2 = hardwareMap.get(Servo.class, "left_grab2");
+        rightGrab2 = hardwareMap.get(Servo.class, "right_grab2");
 
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
 
@@ -187,8 +197,6 @@ public class NEAuton_TEST extends LinearOpMode {
         leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -216,12 +224,8 @@ public class NEAuton_TEST extends LinearOpMode {
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
 
-
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-
         //MORE VUFORIA INITS
         relicTrackables.activate();
 
@@ -231,26 +235,24 @@ public class NEAuton_TEST extends LinearOpMode {
 
 
         //START ACTIONS
-
-        //Grabs the block
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-
-        //Moves arm/slider to certain position
-        moveArm(DRIVE_SPEED, -500, 10.0);
-
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
 
 
 
 
 
-        //Knocking off the Jewel (RED ALLIANCE)!!!
+
+        //Knocking off the Jewel (BLUE ALLIANCE)!!!
+
+
 
         //NOTE:SWIVEL ARM DOWN
         jewelStick.setPosition(jewelPos1);
-
-        //Waits for 1 second. Possibly add more to allow Vuforia to read pictograph.
+        //To ensure that the arm is in the correct place we must sleep for a second.
         sleep(1000);
 
         //COLOR SENSOR FINDS COLOR
@@ -271,45 +273,26 @@ public class NEAuton_TEST extends LinearOpMode {
 
 
         //JEWEL SENSOR PATHS
-        if (!colorIsRed) {
-            //NOTE: SENSOR FACES FORWARDS
+        if (colorIsRed) {
+            //NOTE: SENSOR FACES BACKWARDS
             encoderDrive(0.13, 3, 3, 4.0);
             sleep(500);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
 
-        } else if (colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -4, -4, 4.0);
+        } else if (!colorIsRed) {
+            encoderDrive(DRIVE_SPEED, -2.5, +2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
+            encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
         }
 
-
-
-
-
-
-        // NON VUFORIA SPECIFIC BLOCK PLACEMENT PATHING
-
-
-        //Move Slider up
-        moveArm(DRIVE_SPEED*1.5, 2500, 10);
-        //BACKWARDS OFF BALNACE STONE
-        encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
-        //FORWARDS TO ALIGN
-        encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+        //Non-Vumark Path
+        //Get off balance stone
+        encoderDrive(DRIVE_SPEED*1.2, 25, 25, 10.0);
+        //Align with balance stone
+        encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
         sleep(250);
-
-
-        //BACKWARDS # Inches
-        encoderDrive(DRIVE_SPEED, - (7+4), - (7 + 4), 10.0);
-        //RIGHT Turn - Rear Facing East Wall
-        encoderDrive(TURN_SPEED, 12, -12, 6.0);
-        //BACKWARDS TO ALIGN ON WALL
-        encoderDrive(DRIVE_SPEED, -13, -13, 10.0);
-
-
 
 
         //VUMARK PATHS
@@ -322,56 +305,120 @@ public class NEAuton_TEST extends LinearOpMode {
         }
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            if (vuMark == RelicRecoveryVuMark.RIGHT) {
-
-                //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
-                encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
-
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                //Drive towards correct position
+                encoderDrive(DRIVE_SPEED*2, 6, 6, 10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*2,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn (Pull the left wheel back because the center of rotation
+                is forward on the bot and would otherwise hit the south balance board)*/
+                encoderDrive(DRIVE_SPEED*2, -24,24,5);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
-
-                //FORWARD ## INCHES TO LINE UP WITH RIGHT
-                encoderDrive(DRIVE_SPEED*1.2, 23+2, 23+2, 10.0);
-
+                //Drive towards correct position
+                encoderDrive(DRIVE_SPEED*2, 13, 13, 10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*1.5,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn around. Doesn't matter if the right or left wheel come
+                back because its the center*/
+                encoderDrive(DRIVE_SPEED*2, -24,24,5);
                 caseVumark = 'L';
             }
-            else if (vuMark == RelicRecoveryVuMark.LEFT) {
-
-                //FORWARDS ## INCHES TO LINE UP WITH LEFT COLUMN
-                encoderDrive(DRIVE_SPEED*1.5, 31+2, 31+2, 10.0);
-
+            else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                //Drive towards correct position
+                encoderDrive(DRIVE_SPEED*2, 20,20,10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*1.5,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn (Pull the right wheel back because the center of rotation
+                is forward on the bot and would otherwise hit the north balance board)*/
+                encoderDrive(DRIVE_SPEED*2, 24,-24,5);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-
-            //FORWARD ## INCHES TO LINE UP WITH RIGHT COLUMN
-            encoderDrive(DRIVE_SPEED, 16+2, 16+2, 10.0);
+            //Drive towards correct position
+            encoderDrive(DRIVE_SPEED*2, 6, 6, 10.0);
+            //Turn towards Box
+            encoderDrive(DRIVE_SPEED*2,-12,12,5);
+            //Drive into Box
+            encoderDrive(DRIVE_SPEED*2,12,12,5);
+            //Drive outta the box
+            encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+            sleep(100);
+            /*Turn (Pull the left wheel back because the center of rotation
+            is forward on the bot and would otherwise hit the south balance board)*/
+            encoderDrive(DRIVE_SPEED*2, -24,24,5);
         }
-
-
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
 
 
-        //AFTER IN FRONT OF CORRECT COLUMN
+        /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
+        encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
+        encoderDrive(DRIVE_SPEED, 10, 10, 4.0);*/
 
-        //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
-        encoderDrive(TURN_SPEED, 12, -12, 6.0);
+        //Pull the arm up even further as to make room for the second glyph.
+                moveArm(DRIVE_SPEED*1.7,1500,3);
+                //Set all the servos to pushing settings
+                leftGrab.setPosition(leftPushPos);
+                rightGrab.setPosition(rightPushPos);
+                leftGrab2.setPosition(leftPushPos2);
+                rightGrab2.setPosition(rightPushPos2);
+                //DRIVE INTO THAT PILE
+                encoderDrive(DRIVE_SPEED*4,60,60,6);
+                sleep(300);
+                //Hopefully grab two glyphs?
+                leftGrab.setPosition(leftClosePos);
+                rightGrab.setPosition(rightClosePos);
+                leftGrab2.setPosition(leftClosePos);
+                rightGrab2.setPosition(rightClosePos);
+                //Allowing the servos to reach their positions
+                sleep(500);
+                //Back up in order to not hit glyphs
+                encoderDrive(DRIVE_SPEED*2,-30,-30,5);
+                //Turn around to face that box
+                encoderDrive(DRIVE_SPEED*1.4,-24,24,5);
+                //Drive into the box.
+                encoderDrive(DRIVE_SPEED*1.9,38,38,8);
 
-        //FORWARD INTO CRYPTOBOX
-        encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
+
+
+
+
+
+
+        /*sleep(250);
+
+        encoderDrive(DRIVE_SPEED, -16,-16, 10.0);
+        encoderDrive(DRIVE_SPEED, 8, -8, 6.0);
+        */
 
 
         //RELEASE AND BACK UP
         sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
+        leftGrab2.setPosition(leftOpenPos2);
+        rightGrab2.setPosition(rightOpenPos2);
         sleep(500);     // pause for servos to move
 
-        //REVERSE 2 Inches so you don't touch the block (DQ points)
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);
 
 
@@ -379,11 +426,8 @@ public class NEAuton_TEST extends LinearOpMode {
         telemetry.update();
     }
 
-
-
-
     /*
-     *  Method to perform a relative move, based on encoder counts.
+     *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position

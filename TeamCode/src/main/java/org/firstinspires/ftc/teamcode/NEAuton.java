@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -75,7 +76,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="VUFORIA RED NorthEast Auton", group="Red")
-//@Disabled
+@Disabled
 public class NEAuton extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -302,7 +303,7 @@ public class NEAuton extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -333,7 +334,7 @@ public class NEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -351,7 +352,7 @@ public class NEAuton extends LinearOpMode {
 
 
                 //FORWARD ## INCHES TO LINE UP WITH RIGHT
-                encoderDrive(DRIVE_SPEED, 23+2, 23+2, 10.0);
+                encoderDrive(DRIVE_SPEED*1.2, 23+2, 23+2, 10.0);
                 //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
 
@@ -364,7 +365,7 @@ public class NEAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Pick up front arm.
-                moveArm(DRIVE_SPEED,2000,5);
+                moveArm(DRIVE_SPEED*1.5,2500,5);
                 //BACKWARDS OF BALNACE STONE
                 encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
                 //FORWARDS TO ALIGN
@@ -383,7 +384,7 @@ public class NEAuton extends LinearOpMode {
 
 
                 //FORWARDS ## INCHES TO LINE UP WITH LEFT COLUMN
-                encoderDrive(DRIVE_SPEED*1.2, 31+2, 31+2, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 31+2, 31+2, 10.0);
                 //RIGHT TURN TOWARDS CRYPTOBOX (CHANGE 11.5 and -12 if you need to)
                 encoderDrive(TURN_SPEED, 12, -12, 6.0);
 
@@ -395,7 +396,7 @@ public class NEAuton extends LinearOpMode {
             else caseVumark = '?';
         } else {
             //Pick up front arm.
-            moveArm(DRIVE_SPEED,2000,5);
+            moveArm(DRIVE_SPEED*1.5,2500,5);
             //BACKWARDS OF BALNACE STONE
             encoderDrive(DRIVE_SPEED*1.3, -25, -25, 10.0);
             //FORWARDS TO ALIGN

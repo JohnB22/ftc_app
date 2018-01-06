@@ -108,8 +108,8 @@ public class SWAuton extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
-    double jewelPos2 = 0.25;
+    double jewelPos1 = 0.93;
+    double jewelPos2 = 0.13;
 
     boolean grabberClosed;
 
@@ -265,18 +265,20 @@ public class SWAuton extends LinearOpMode {
             jewelStick.setPosition(jewelPos2);
 
         } else if (!colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -4, -4, 4.0);
+            encoderDrive(DRIVE_SPEED, -2.5, +2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
+            encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
         }
 
-
-
-
-
-
-
+        //Non-Vumark Path
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
+        //Get off balance stone
+        encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
+        //Align with balance stone
+        encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
+        sleep(250);
 
 
         //VUMARK PATHS
@@ -290,81 +292,36 @@ public class SWAuton extends LinearOpMode {
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //Get off balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
-                //Align with balance stone
-                encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
-                sleep(250);
-
                 //Drive towards correct position
                 encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
-                //Turn towards cryptobox
-                encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-                //Place into the box
-                encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //Get off balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
-                //Align with balance stone
-                encoderDrive(DRIVE_SPEED, -7, -7, 5.0);
-                sleep(250);
-
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED, 13, 13, 10.0);
-                //Turn towards cryptobox
-                encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-                //Place into the box
-                encoderDrive(DRIVE_SPEED, 14, 14, 10.0);
-
-
+                encoderDrive(DRIVE_SPEED*1.3, 13, 13, 10.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                //Pick up front arm.
-                moveArm(DRIVE_SPEED*1.2,2000,5);
-                //Get off the balance stone
-                encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
-                //Align on the balance stone
-                encoderDrive(DRIVE_SPEED, -7, -7, 5.0);
-                sleep(250);
-
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED, 20,20,10.0);
-                //Turn into cryptobox
-                encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-                //Drive into the box
-                encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
-
+                encoderDrive(DRIVE_SPEED*1.4, 20,20,10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            //Pick up front arm.
-            moveArm(DRIVE_SPEED*1.2,2000,5);
-            //Drive off the balance stone
-            encoderDrive(DRIVE_SPEED, 20, 20, 10.0);
-            //Align with the balance stone
-            encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
-            sleep(250);
-
             //Drive towards the correct position
             encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
-            //Turn into the correct column
-            encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-            //Drive into the cryptobox
-            encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
+
+
+        //Put into correct column code
+
+        //Turn towards cryptobox
+        encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
+        //Place into the box
+        encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
 
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
@@ -386,10 +343,10 @@ public class SWAuton extends LinearOpMode {
 
 
         //RELEASE AND BACK UP
-        sleep(1000);
+        sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
-        sleep(1000);     // pause for servos to move
+        sleep(500);     // pause for servos to move
 
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);
 
