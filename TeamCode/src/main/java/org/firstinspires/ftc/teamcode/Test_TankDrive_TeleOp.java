@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 
-@TeleOp(name="RelicTest: Tank Drive Train", group="Linear Opmode")
+@TeleOp(name="ACTUAL DRIVE", group="Linear Opmode")
 
 //Comment out @Disabled to add this OpMode to the Driver Station List!
 //@Disabled
@@ -26,11 +26,15 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
+    private DcMotor wheelMotor = null;
     private DcMotor armMotor = null;
 
 
     private Servo leftGrab = null;
     private Servo rightGrab = null;
+
+    private Servo leftGrab2 = null;
+    private Servo rightGrab2 = null;
 
 
     private Servo jewelStick = null;
@@ -96,7 +100,7 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
     double relicGrabClosed = 0.75;
 
     double relicArmPosHalfDown = 0.66;
-    double relicArmPosDown = 0.71;
+    double relicArmPosDown = 0.77;
     double relicArmPosUp = 0;
 
     double relicPos = 0;
@@ -125,7 +129,8 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
         leftGrab = hardwareMap.get(Servo.class, "left_grab");
         rightGrab = hardwareMap.get(Servo.class, "right_grab");
 
-
+        leftGrab2 = hardwareMap.get(Servo.class, "left_grab2");
+        rightGrab2 = hardwareMap.get(Servo.class, "right_grab2");
 
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
@@ -133,6 +138,8 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
         jewelStick = hardwareMap.get(Servo.class, "jewel_servo");
         //Rear Wheeled motor
 
+        //Rear Wheeled motor
+        wheelMotor = hardwareMap.get(DcMotor.class, "rear_push");
 
 
         relicSlideMotor = hardwareMap.get(DcMotor.class, "relic_slide");
@@ -151,9 +158,9 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
         leftGrab.setDirection(Servo.Direction.FORWARD);
         rightGrab.setDirection(Servo.Direction.FORWARD);
 
-
-
-
+        leftGrab2.setDirection(Servo.Direction.FORWARD);
+        rightGrab2.setDirection(Servo.Direction.FORWARD);
+        wheelMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
 
@@ -164,7 +171,9 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //Rear Wheel running with Encoders
-
+        wheelMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Rear Wheel running with Encoders
+        wheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d",
@@ -238,7 +247,7 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
             armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             armPower = gamepad2.right_stick_y;
-            armPower = Range.scale(armPower, -1.0, 1.0, -0.50, 0.50);
+            armPower = Range.scale(armPower, -1.0, 1.0, -0.70, 0.70);
 
 
             armEncoderPos = armMotor.getCurrentPosition();
@@ -278,7 +287,21 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
             //Servo grabber controls
 
 
+            // toggle style
+            if(gamepad2.a && !toggleButtonADown && !grabberClosed2) {
+                leftGrab2.setPosition(leftClosePos2);
+                rightGrab2.setPosition(rightClosePos2);
 
+                grabberClosed2 = true;
+
+            }
+            else if (gamepad2.a && !toggleButtonADown && grabberClosed2){
+                leftGrab2.setPosition(leftOpenPos2);
+                rightGrab2.setPosition(rightOpenPos2);
+
+                grabberClosed2 = false;
+
+            }
 
             toggleButtonADown = gamepad2.a;
 
@@ -291,11 +314,20 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
                 rightGrab.setPosition(rightHalfPos);
             }
 
+            if(gamepad2.b) {
+                leftGrab2.setPosition(leftHalfPos2);
+                rightGrab2.setPosition(rightHalfPos2);
+            }
 
+            if (gamepad2.dpad_down){
+                leftGrab2.setPosition(leftPushPos2);
+                rightGrab2.setPosition(rightPushPos2);
+            }
             if (gamepad2.dpad_up){
                 leftGrab.setPosition(leftPushPos);
                 rightGrab.setPosition(rightPushPos);
             }
+
 
 
 
@@ -324,6 +356,11 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
                 relicGrabServo.setPosition(relicGrabClosed);
             }
 
+            double wheelMotorPower = gamepad2.right_trigger + -gamepad2.left_trigger;
+            wheelMotorPower = Range.scale(wheelMotorPower, -1, 1, -0.25, 0.25);
+
+            wheelMotor.setPower(wheelMotorPower);
+
 
 
 
@@ -341,6 +378,7 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (0.2f), right (0.2f)", leftPower, rightPower);
             telemetry.addData("ArmMotor", "Current Arm Position = " + armEncoderPos);
+            telemetry.addData("WheelMotor", "Current Backthingie Ticks = " + wheelMotor.getCurrentPosition());
             telemetry.addData("ServoGrab", "Grabber Closed: " + grabberClosed);
             telemetry.addLine("Robotics is awesome! John was here :P");
             telemetry.addLine("Don't forget your GP ;) ;) #BlameEvan");

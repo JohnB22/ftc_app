@@ -74,9 +74,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="NEW VUFORIA BLUE SouthWest Auton", group="Blue")
+@Autonomous(name="BLUE SouthWest Auton 3-GLYPH", group="Blue")
 //@Disabled
-public class SWAutonNEW extends LinearOpMode {
+public class SWAuton_3Glyph extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwarePushbot robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -92,10 +92,14 @@ public class SWAutonNEW extends LinearOpMode {
     private Servo leftGrab = null;
     private Servo rightGrab = null;
 
+    private Servo leftGrab2 = null;
+    private Servo rightGrab2 = null;
+
     //Jewels stuff
     private Servo jewelStick = null;
 
-
+    private ColorSensor sensorColor;
+    private DistanceSensor sensorDistance;
 
     //Non-static vars
 
@@ -106,8 +110,17 @@ public class SWAutonNEW extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
-    double jewelPos2 = 0.25;
+    double jewelPos1 = 0.93;
+    double jewelPos2 = 0.13;
+
+    double leftOpenPos2 = 0.79;
+    double rightOpenPos2 = 0.00;
+
+    double leftPushPos = 0.40;
+    double rightPushPos = 0.75;
+
+    double leftPushPos2 = 0.60;
+    double rightPushPos2 = 0.12;
 
     boolean grabberClosed;
 
@@ -142,6 +155,9 @@ public class SWAutonNEW extends LinearOpMode {
         leftGrab = hardwareMap.get(Servo.class, "left_grab");
         rightGrab = hardwareMap.get(Servo.class, "right_grab");
 
+        leftGrab2 = hardwareMap.get(Servo.class, "left_grab2");
+        rightGrab2 = hardwareMap.get(Servo.class, "right_grab2");
+
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
 
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
@@ -153,7 +169,9 @@ public class SWAutonNEW extends LinearOpMode {
 
 
         jewelStick = hardwareMap.get(Servo.class, "jewel_servo");
-
+        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+        // get a reference to the distance sensor that shares the same name.
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
 
         //array that *will* hold the hue saturation, and value (HSV)
         float hsvValues[] = {0F, 0F, 0F};
@@ -220,7 +238,8 @@ public class SWAutonNEW extends LinearOpMode {
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-        moveArm(DRIVE_SPEED, -500, 10.0);
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
 
 
 
@@ -232,17 +251,47 @@ public class SWAutonNEW extends LinearOpMode {
 
 
         //NOTE:SWIVEL ARM DOWN
-
+        jewelStick.setPosition(jewelPos1);
+        //To ensure that the arm is in the correct place we must sleep for a second.
+        sleep(1000);
 
         //COLOR SENSOR FINDS COLOR
 
+        Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
+                (int) (sensorColor.green() * SCALE_FACTOR),
+                (int) (sensorColor.blue() * SCALE_FACTOR),
+                hsvValues);
+
+        if (hsvValues[0] < 50 || hsvValues[0] > 330 ) {                           //If RED
+            colorIsRed = true;
+
+        } else if (hsvValues[0] > 150 && hsvValues[0] < 285 ) {                     //If Blue
+            colorIsRed = false;
+        } else {
+            colorIsRed = false;
+        }
+
+
+        //JEWEL SENSOR PATHS
+        if (colorIsRed) {
+            //NOTE: SENSOR FACES BACKWARDS
+            encoderDrive(0.13, 3, 3, 4.0);
+            sleep(500);
+            //SWIVEL ARM UP
+            jewelStick.setPosition(jewelPos2);
+
+        } else if (!colorIsRed) {
+            encoderDrive(DRIVE_SPEED, -2.5, +2.5, 4.0);
+            //SWIVEL ARM UP
+            jewelStick.setPosition(jewelPos2);
+            encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
+        }
+
         //Non-Vumark Path
-        //Pick up front arm.
-        moveArm(DRIVE_SPEED*1.5,2500,5);
         //Get off balance stone
-        encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
+        encoderDrive(DRIVE_SPEED*1.2, 25, 25, 10.0);
         //Align with balance stone
-        encoderDrive(DRIVE_SPEED, -13, -13, 5.0);
+        encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
         sleep(250);
 
 
@@ -258,39 +307,96 @@ public class SWAutonNEW extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
+                encoderDrive(DRIVE_SPEED*2, 6, 6, 10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*2,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn (Pull the left wheel back because the center of rotation
+                is forward on the bot and would otherwise hit the south balance board)*/
+                encoderDrive(DRIVE_SPEED*2, -24,24,5);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED*1.3, 13, 13, 10.0);
+                encoderDrive(DRIVE_SPEED*2, 13, 13, 10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*1.5,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn around. Doesn't matter if the right or left wheel come
+                back because its the center*/
+                encoderDrive(DRIVE_SPEED*2, -24,24,5);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED*1.4, 20,20,10.0);
+                encoderDrive(DRIVE_SPEED*2, 20,20,10.0);
+                //Turn towards Box
+                encoderDrive(DRIVE_SPEED*1.5,-12,12,5);
+                //Drive into Box
+                encoderDrive(DRIVE_SPEED*2,12,12,5);
+                //Drive outta the box
+                encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+                sleep(100);
+                /*Turn (Pull the right wheel back because the center of rotation
+                is forward on the bot and would otherwise hit the north balance board)*/
+                encoderDrive(DRIVE_SPEED*2, 24,-24,5);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            //Drive towards the correct position
-            encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
+            //Drive towards correct position
+            encoderDrive(DRIVE_SPEED*2, 6, 6, 10.0);
+            //Turn towards Box
+            encoderDrive(DRIVE_SPEED*2,-12,12,5);
+            //Drive into Box
+            encoderDrive(DRIVE_SPEED*2,12,12,5);
+            //Drive outta the box
+            encoderDrive(DRIVE_SPEED*2,-15,-15,5);
+            sleep(100);
+            /*Turn (Pull the left wheel back because the center of rotation
+            is forward on the bot and would otherwise hit the south balance board)*/
+            encoderDrive(DRIVE_SPEED*2, -24,24,5);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
         telemetry.update();
 
 
-        //Put into correct column code
-
-        //Turn towards cryptobox
-        encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
-        //Place into the box
-        encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
-
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
-        encoderDrive(DRIVE_SPEED, 10, 10, 4.0);
+        encoderDrive(DRIVE_SPEED, 10, 10, 4.0);*/
+
+        //Pull the arm up even further as to make room for the second glyph.
+                moveArm(DRIVE_SPEED*1.7,1500,3);
+                //Set all the servos to pushing settings
+                leftGrab.setPosition(leftPushPos);
+                rightGrab.setPosition(rightPushPos);
+                leftGrab2.setPosition(leftPushPos2);
+                rightGrab2.setPosition(rightPushPos2);
+                //DRIVE INTO THAT PILE
+                encoderDrive(DRIVE_SPEED*4,60,60,6);
+                sleep(300);
+                //Hopefully grab two glyphs?
+                leftGrab.setPosition(leftClosePos);
+                rightGrab.setPosition(rightClosePos);
+                leftGrab2.setPosition(leftClosePos);
+                rightGrab2.setPosition(rightClosePos);
+                //Allowing the servos to reach their positions
+                sleep(500);
+                //Back up in order to not hit glyphs
+                encoderDrive(DRIVE_SPEED*2,-30,-30,5);
+                //Turn around to face that box
+                encoderDrive(DRIVE_SPEED*1.4,-24,24,5);
+                //Drive into the box.
+                encoderDrive(DRIVE_SPEED*1.9,38,38,8);
 
 
 
@@ -298,9 +404,7 @@ public class SWAutonNEW extends LinearOpMode {
 
 
 
-
-
-        sleep(250);
+        /*sleep(250);
 
         encoderDrive(DRIVE_SPEED, -16,-16, 10.0);
         encoderDrive(DRIVE_SPEED, 8, -8, 6.0);
@@ -311,6 +415,8 @@ public class SWAutonNEW extends LinearOpMode {
         sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
+        leftGrab2.setPosition(leftOpenPos2);
+        rightGrab2.setPosition(rightOpenPos2);
         sleep(500);     // pause for servos to move
 
         encoderDrive(DRIVE_SPEED, -2,-2,3.0);

@@ -75,8 +75,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="VUFORIA RED NorthEast Auton TEST", group="Red")
-@Disabled
+@Autonomous(name="VUFORIA RED NorthEast Auton", group="Red")
+//@Disabled
 public class NEAuton_TEST extends LinearOpMode {
 
     /* Declare OpMode members. */

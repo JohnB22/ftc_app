@@ -75,8 +75,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="VUFORIA BLUE NorthWest Auton TEST", group="Blue")
-@Disabled
+@Autonomous(name="VUFORIA BLUE NorthWest Auton", group="Blue")
+//@Disabled
 public class NWAuton_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -108,8 +108,8 @@ public class NWAuton_Test extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
-    double jewelPos2 = 0.25;
+    double jewelPos1 = 0.93;
+    double jewelPos2 = 0.13;
 
     boolean grabberClosed;
 
@@ -224,7 +224,8 @@ public class NWAuton_Test extends LinearOpMode {
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-        moveArm(DRIVE_SPEED, -500, 10.0);
+        //Pick up front arm.
+        moveArm(DRIVE_SPEED*1.5,2500,5);
 
 
 
@@ -265,17 +266,14 @@ public class NWAuton_Test extends LinearOpMode {
             jewelStick.setPosition(jewelPos2);
 
         } else if (!colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -2.5, -2.5, 4.0);
+            encoderDrive(DRIVE_SPEED, -2.5, +2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            sleep(500);
-            encoderDrive(DRIVE_SPEED, 3, 3, 4.0);
+            encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
         }
 
 
         //Non Vumark Paths
-        //Pick up front arm.
-        moveArm(DRIVE_SPEED*1.5,2500,5);
         //Drive off balance stone
         encoderDrive(DRIVE_SPEED, 25, 25, 10.0);
         //Align with Balance Stone
@@ -283,7 +281,7 @@ public class NWAuton_Test extends LinearOpMode {
         sleep(250);
 
         //Come off alignment forward
-        encoderDrive(DRIVE_SPEED, 6, 6, 10.0);
+        encoderDrive(DRIVE_SPEED, 4, 4, 10.0);
         //Turn to back into wall
         encoderDrive(TURN_SPEED, 12, -12, 6.0);
         //Back into wall
@@ -302,22 +300,22 @@ public class NWAuton_Test extends LinearOpMode {
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Drive to cryptobox from wall
-                encoderDrive(DRIVE_SPEED*1.5, 19, 19, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 17, 17, 10.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Drive to cryptobox from wall
-                encoderDrive(DRIVE_SPEED*1.5, 25, 25, 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, 23, 23, 10.0);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Drive to cryptobox from wall
-                encoderDrive(DRIVE_SPEED*1.7, 33, 33, 10.0);
+                encoderDrive(DRIVE_SPEED*1.7, 31, 31, 10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            encoderDrive(DRIVE_SPEED*1.5, 19, 19, 10.0);
+            encoderDrive(DRIVE_SPEED*1.5, 17, 17, 10.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);

@@ -108,8 +108,8 @@ public class SWAuton extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
-    double jewelPos2 = 0.25;
+    double jewelPos1 = 0.93;
+    double jewelPos2 = 0.13;
 
     boolean grabberClosed;
 
@@ -265,10 +265,10 @@ public class SWAuton extends LinearOpMode {
             jewelStick.setPosition(jewelPos2);
 
         } else if (!colorIsRed) {
-            encoderDrive(DRIVE_SPEED, -4, -4, 4.0);
+            encoderDrive(DRIVE_SPEED, -2.5, +2.5, 4.0);
             //SWIVEL ARM UP
             jewelStick.setPosition(jewelPos2);
-            encoderDrive(DRIVE_SPEED, 4, 4, 4.0);
+            encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
         }
 
         //Non-Vumark Path

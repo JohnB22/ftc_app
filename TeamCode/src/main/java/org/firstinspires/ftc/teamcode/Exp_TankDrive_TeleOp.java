@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 
-@TeleOp(name="Main: Tank Drive Train", group="Linear Opmode")
+@TeleOp(name="FAKE DRIVE (DON'T CLICK ALANA)", group="Linear Opmode")
 
 //Comment out @Disabled to add this OpMode to the Driver Station List!
 //@Disabled
@@ -239,7 +239,7 @@ public class Exp_TankDrive_TeleOp extends LinearOpMode {
             armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             armPower = gamepad2.right_stick_y;
-            armPower = Range.scale(armPower, -1.0, 1.0, -0.60, 0.40);
+            armPower = Range.scale(armPower, -1.0, 1.0, -0.70, 0.70);
 
 
             armEncoderPos = armMotor.getCurrentPosition();
