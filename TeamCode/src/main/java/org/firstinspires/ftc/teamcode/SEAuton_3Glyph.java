@@ -31,6 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -42,7 +44,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
@@ -77,6 +86,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="VUFORIA RED SouthEast Auton 3 Glyph", group="Red")
 //@Disabled
 public class SEAuton_3Glyph extends LinearOpMode {
+
+
+    // The IMU sensor object
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
 
     /* Declare OpMode members. */
     HardwarePushbot robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -152,6 +169,19 @@ public class SEAuton_3Glyph extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
@@ -214,12 +244,12 @@ public class SEAuton_3Glyph extends LinearOpMode {
 
         //SET UP VUFORIA
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        parameters.vuforiaLicenseKey = "AV4rzZr/////AAAAGdd9iX6K6E4vot4iYXx7M+sE9XVwwTL30eOKvSPorcY1yK25A3ZI/ajH4Ktmg+2K1R4sUibLK6BBgw/jKf/juUgjbwB6Wi/magAhEnKorWebeAg8AzjlhbgBE5mhmtkX60bedZF/qX/6/leqVhEd0XZvGn/3xv56Z5NMrOsZzJRMqWNujm4R8Q1fhjBqwIkFuhGzJ2jFzWktAebZcGaImLwgaOjNlYLebS8lxpDuP7bnu/AwsRo/up1zuvUoncDabDS4SFeh/Vjy2fIFApnq7GieBaL2uv4gssG2JUgYvXz3uvQAswf5b5k8v6z0120obXqyH3949gLYeyoY/uZ5g9r93aoyxr2jEwg7+tRezzit";
+        params.vuforiaLicenseKey = "AV4rzZr/////AAAAGdd9iX6K6E4vot4iYXx7M+sE9XVwwTL30eOKvSPorcY1yK25A3ZI/ajH4Ktmg+2K1R4sUibLK6BBgw/jKf/juUgjbwB6Wi/magAhEnKorWebeAg8AzjlhbgBE5mhmtkX60bedZF/qX/6/leqVhEd0XZvGn/3xv56Z5NMrOsZzJRMqWNujm4R8Q1fhjBqwIkFuhGzJ2jFzWktAebZcGaImLwgaOjNlYLebS8lxpDuP7bnu/AwsRo/up1zuvUoncDabDS4SFeh/Vjy2fIFApnq7GieBaL2uv4gssG2JUgYvXz3uvQAswf5b5k8v6z0120obXqyH3949gLYeyoY/uZ5g9r93aoyxr2jEwg7+tRezzit";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        params.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(params);
 
 
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
@@ -231,8 +261,12 @@ public class SEAuton_3Glyph extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+
         //MORE VUFORIA INITS
         relicTrackables.activate();
+
+
 
         char caseVumark = 'U';
 
@@ -375,26 +409,61 @@ public class SEAuton_3Glyph extends LinearOpMode {
         moveArm(DRIVE_SPEED*3,300,5);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
+        //IMU inits
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity  = imu.getGravity();
         encoderDrive(DRIVE_SPEED*3, 10,10,5);
         encoderDrive(DRIVE_SPEED, -3,-3,3.0);
-
+        if (angles.secondAngle > 1) {
+            while (angles.secondAngle > 1) {
+                rightDrive.setPower(-DRIVE_SPEED);
+            }
+        }if (angles.secondAngle < -1) {
+            while (angles.secondAngle < -1){
+                leftDrive.setPower(-DRIVE_SPEED);
+            }
+        }else {
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
-
         moveArm(DRIVE_SPEED*3,3500,10);
         encoderDrive(DRIVE_SPEED*4,-20,-20,10);
         encoderDrive(DRIVE_SPEED*2,24,-24,10);
+        while (gravity.yAccel > 3){
+            rightDrive.setPower(0.5);
+            leftDrive.setPower(0.5);
+        }
+        rightDrive.setPower(0);
+        leftDrive.setPower(0);
         leftGrab.setPosition(leftPushPos);
         rightGrab.setPosition(rightPushPos);
         leftGrab2.setPosition(leftPushPos2);
         rightGrab2.setPosition(rightPushPos2);
-        encoderDrive(DRIVE_SPEED*3,35,35,10);
+        encoderDrive(DRIVE_SPEED,-0.5,-0.5,10);
+        sleep(500);
+        encoderDrive(DRIVE_SPEED,4,4,10);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
-        encoderDrive(DRIVE_SPEED,-20,-20,10);
-        encoderDrive(DRIVE_SPEED,24,-20,10);
+        encoderDrive(DRIVE_SPEED,-15,-15,10);
+        if (angles.secondAngle > 1) {
+            while (angles.secondAngle > 1) {
+                rightDrive.setPower(-DRIVE_SPEED);
+                leftDrive.setPower(DRIVE_SPEED);
+            }
+        }if (angles.secondAngle < -1) {
+            while (angles.secondAngle < -1){
+                leftDrive.setPower(-DRIVE_SPEED);
+                rightDrive.setPower(DRIVE_SPEED);
+            }
+        }else {
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+        }
         encoderDrive(DRIVE_SPEED*3,50,50,10);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
