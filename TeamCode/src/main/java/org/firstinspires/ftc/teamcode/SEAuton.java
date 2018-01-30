@@ -107,7 +107,7 @@ public class SEAuton extends LinearOpMode {
     double rightClosePos = 0.33;
 
     //Jewel Stick positions
-    double jewelPos1 = 0.85;
+    double jewelPos1 = 0.93;
     double jewelPos2 = 0.25;
 
     boolean grabberClosed;
@@ -225,7 +225,7 @@ public class SEAuton extends LinearOpMode {
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-        moveArm(DRIVE_SPEED, -500, 10.0);
+        moveArm(DRIVE_SPEED*4, 2500, 10.0);
 
 
 
@@ -274,8 +274,15 @@ public class SEAuton extends LinearOpMode {
 
         //Non-Vumark Path
 
-        //Pick up front arm.
-        moveArm(DRIVE_SPEED*1.5,2500,5);
+        //READ VUMARK
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            telemetry.addData("VuMark", "%s visible", vuMark);
+        }
+        else {
+            telemetry.addData("VuMark", "not visible");
+        }
+
         //BACKWARDS OF THE BALANCE STONE
         encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
         //FORWARDS TO ALIGN WITH BALANCE STONE
@@ -285,13 +292,6 @@ public class SEAuton extends LinearOpMode {
 
 
         //VUMARK PATHS
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            telemetry.addData("VuMark", "%s visible", vuMark);
-        }
-        else {
-            telemetry.addData("VuMark", "not visible");
-        }
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
@@ -325,7 +325,7 @@ public class SEAuton extends LinearOpMode {
         encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
 
         //FORWARD ## INCHES INTO CRYPTOBOX
-        encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
+        encoderDrive(DRIVE_SPEED*2.5, 11, 11, 10.0);
 
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
@@ -347,12 +347,18 @@ public class SEAuton extends LinearOpMode {
 
 
         //RELEASE AND BACK UP
-        sleep(1000);
+        sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
-        sleep(1000);     // pause for servos to move
+        sleep(500);     // pause for servos to move
 
-        encoderDrive(DRIVE_SPEED, -2,-2,3.0);
+        encoderDrive(DRIVE_SPEED*4, -7,-7,3.0);
+
+        moveArm(DRIVE_SPEED*3,300,5);
+        leftGrab.setPosition(leftClosePos);
+        rightGrab.setPosition(rightClosePos);
+        encoderDrive(DRIVE_SPEED*3, 10,10,5);
+        encoderDrive(DRIVE_SPEED, -3,-3,3.0);
 
 
         telemetry.addData("Path", "Complete");

@@ -51,6 +51,9 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
     //Non-static vars
 
+    double powerScale = 0.5;
+    double powerScale2 = 1.0;
+
     double leftOpenPos = 0.19;
     double rightOpenPos = 0.93;
 
@@ -63,7 +66,7 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
     double leftPushPos = 0.40;
     double rightPushPos = 0.75;
 
-    double leftOpenPos2 = 0.79;
+    double leftOpenPos2 = 0.83;
     double rightOpenPos2 = 0.00;
 
     double leftClosePos2 = 0.30;
@@ -99,9 +102,15 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
     double relicGrabOpen = 0;
     double relicGrabClosed = 0.75;
 
-    double relicArmPosHalfDown = 0.66;
-    double relicArmPosDown = 0.77;
+    double relicArmPosHalfDown = 0.77;
+    double relicArmPosDown = 0.85;
+    double relicArmPosHalfUp = 0.35;
     double relicArmPosUp = 0;
+
+
+    double  relicIncrement = 0.01;
+    boolean toggleButtonDPADDown;
+    boolean toggleButtonDPADUp;
 
     double relicPos = 0;
 
@@ -222,8 +231,16 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
 
             //Optionally scale total speed down to make driving more manageable
-            leftPower = Range.scale(leftPower, -1.0, 1.0, -0.5, 0.5);
-            rightPower = Range.scale(rightPower, -1.0, 1.0, -0.5, 0.5);
+
+            if (gamepad1.left_bumper) {
+                leftPower = Range.scale(leftPower, -1.0, 1.0, -powerScale2, powerScale2);
+                rightPower = Range.scale(rightPower, -1.0, 1.0, -powerScale2, powerScale2);
+            } else {
+                leftPower = Range.scale(leftPower, -1.0, 1.0, -powerScale, powerScale);
+                rightPower = Range.scale(rightPower, -1.0, 1.0, -powerScale, powerScale);
+            }
+
+
 
             //Send calculated power (set in Power variables) to the actual motors
             leftDrive.setPower(leftPower);
@@ -233,10 +250,10 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
             //Jewel Stick controls
 
-            if (gamepad2.dpad_left) {
+            if (gamepad2.dpad_left && !gamepad2.left_bumper) {
                 jewelStick.setPosition(jewelPos1);
 
-            } else if (gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_right && !gamepad2.left_bumper) {
                 jewelStick.setPosition(jewelPos2);
             }
 
@@ -288,14 +305,14 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
 
             // toggle style
-            if(gamepad2.a && !toggleButtonADown && !grabberClosed2) {
+            if((gamepad2.a && !gamepad2.left_bumper) && !toggleButtonADown && !grabberClosed2) {
                 leftGrab2.setPosition(leftClosePos2);
                 rightGrab2.setPosition(rightClosePos2);
 
                 grabberClosed2 = true;
 
             }
-            else if (gamepad2.a && !toggleButtonADown && grabberClosed2){
+            else if ((gamepad2.a && !gamepad2.left_bumper) && !toggleButtonADown && grabberClosed2){
                 leftGrab2.setPosition(leftOpenPos2);
                 rightGrab2.setPosition(rightOpenPos2);
 
@@ -314,16 +331,16 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
                 rightGrab.setPosition(rightHalfPos);
             }
 
-            if(gamepad2.b) {
+            if(gamepad2.b && !gamepad2.left_bumper) {
                 leftGrab2.setPosition(leftHalfPos2);
                 rightGrab2.setPosition(rightHalfPos2);
             }
 
-            if (gamepad2.dpad_down){
+            if (gamepad2.dpad_down && !gamepad2.left_bumper){
                 leftGrab2.setPosition(leftPushPos2);
                 rightGrab2.setPosition(rightPushPos2);
             }
-            if (gamepad2.dpad_up){
+            if (gamepad2.dpad_up  && !gamepad2.left_bumper){
                 leftGrab.setPosition(leftPushPos);
                 rightGrab.setPosition(rightPushPos);
             }
@@ -339,20 +356,38 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
 
                 //Send calculated power to arm Motor
                 relicSlideMotor.setPower(relicSlidePower);
-            } else if (gamepad2.right_stick_button) {
-                relicArmServo.setPosition(relicArmPosHalfDown);
-            }else if (gamepad2.left_stick_button){
-                relicArmServo.setPosition(relicArmPosDown);
-            }else if (gamepad2.right_bumper){
-                relicArmServo.setPosition(relicArmPosUp);
             } else {
                 relicSlideMotor.setPower(0);
             }
 
+            if (gamepad2.right_stick_button) {
+                relicArmServo.setPosition(relicArmPosHalfDown);
+            }
+            if (gamepad2.left_stick_button){
+                relicArmServo.setPosition(relicArmPosHalfUp);
+            }
+            if (gamepad2.right_bumper){
+                relicArmServo.setPosition(relicArmPosUp);
+            }
 
-            if (gamepad1.b) {
+            //Servo grabber controls
+            // toggle style
+            if((gamepad2.dpad_down && gamepad2.left_bumper) && !toggleButtonDPADDown) {
+                relicArmServo.setPosition(relicArmServo.getPosition() + relicIncrement);
+
+            }
+            toggleButtonDPADDown = gamepad2.dpad_down;
+
+            if((gamepad2.dpad_up && gamepad2.left_bumper) && !toggleButtonDPADUp) {
+                relicArmServo.setPosition(relicArmServo.getPosition() - relicIncrement);
+
+            }
+            toggleButtonDPADUp = gamepad2.dpad_up;
+
+
+            if (gamepad2.b && gamepad2.left_bumper) {
                 relicGrabServo.setPosition(relicGrabOpen);
-            } if (gamepad1.a) {
+            } if (gamepad2.a && gamepad2.left_bumper) {
                 relicGrabServo.setPosition(relicGrabClosed);
             }
 
@@ -380,6 +415,7 @@ public class Test_TankDrive_TeleOp extends LinearOpMode {
             telemetry.addData("ArmMotor", "Current Arm Position = " + armEncoderPos);
             telemetry.addData("WheelMotor", "Current Backthingie Ticks = " + wheelMotor.getCurrentPosition());
             telemetry.addData("ServoGrab", "Grabber Closed: " + grabberClosed);
+            telemetry.addData("RelicArmPos",relicArmServo.getPosition() );
             telemetry.addLine("Robotics is awesome! John was here :P");
             telemetry.addLine("Don't forget your GP ;) ;) #BlameEvan");
             telemetry.update();

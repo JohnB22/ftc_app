@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -224,7 +223,7 @@ public class SWAuton extends LinearOpMode {
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
 
-        moveArm(DRIVE_SPEED, -500, 10.0);
+        moveArm(DRIVE_SPEED*4, 2500, 10.0);
 
 
 
@@ -271,9 +270,15 @@ public class SWAuton extends LinearOpMode {
             encoderDrive(DRIVE_SPEED, +2.5, -2.5, 4.0);
         }
 
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            telemetry.addData("VuMark", "%s visible", vuMark);
+        }
+        else {
+            telemetry.addData("VuMark", "not visible");
+        }
+
         //Non-Vumark Path
-        //Pick up front arm.
-        moveArm(DRIVE_SPEED*1.5,2500,5);
         //Get off balance stone
         encoderDrive(DRIVE_SPEED, 29, 29, 10.0);
         //Align with balance stone
@@ -282,13 +287,6 @@ public class SWAuton extends LinearOpMode {
 
 
         //VUMARK PATHS
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-            telemetry.addData("VuMark", "%s visible", vuMark);
-        }
-        else {
-            telemetry.addData("VuMark", "not visible");
-        }
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.LEFT) {
@@ -303,7 +301,7 @@ public class SWAuton extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //Drive towards correct position
-                encoderDrive(DRIVE_SPEED*1.4, 20,20,10.0);
+                encoderDrive(DRIVE_SPEED*2, 20,20,10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
@@ -321,7 +319,7 @@ public class SWAuton extends LinearOpMode {
         //Turn towards cryptobox
         encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
         //Place into the box
-        encoderDrive(DRIVE_SPEED, 11, 11, 10.0);
+        encoderDrive(DRIVE_SPEED*2.5, 11, 11, 10.0);
 
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
@@ -348,7 +346,14 @@ public class SWAuton extends LinearOpMode {
         rightGrab.setPosition(rightOpenPos);
         sleep(500);     // pause for servos to move
 
-        encoderDrive(DRIVE_SPEED, -2,-2,3.0);
+        encoderDrive(DRIVE_SPEED*4, -7,-7,3.0);
+
+        moveArm(DRIVE_SPEED*3,300,5);
+        leftGrab.setPosition(leftClosePos);
+        rightGrab.setPosition(rightClosePos);
+        encoderDrive(DRIVE_SPEED*3, 10,10,5);
+        encoderDrive(DRIVE_SPEED, -3,-3,3.0);
+
 
 
         telemetry.addData("Path", "Complete");
