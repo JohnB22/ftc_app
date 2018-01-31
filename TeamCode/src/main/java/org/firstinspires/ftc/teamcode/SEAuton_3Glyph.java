@@ -169,19 +169,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
 
         armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
@@ -349,22 +337,22 @@ public class SEAuton_3Glyph extends LinearOpMode {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //BACKWARDS ## INCHES TO LINE UP WITH RIGHT COLUMN
                 //Changed 4+8 to 4+9 due to missing slightly to the right. Need to go further on right vumark.
-                encoderDrive(DRIVE_SPEED*1.2, -(4+9), -(4+9), 10.0);
+                encoderDrive(DRIVE_SPEED*1.2, -(5+9), -(5+9), 10.0);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED, -(11+9), -(11+9), 10.0);
+                encoderDrive(DRIVE_SPEED, -(12+9), -(12+9), 10.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED*1.5, -(19.5+9), -(19.5+9), 10.0);
+                encoderDrive(DRIVE_SPEED*1.5, -(20.5+9), -(20.5+9), 10.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            encoderDrive(DRIVE_SPEED, -(11+9), -(11+9), 10.0);
+            encoderDrive(DRIVE_SPEED, -(12+9), -(12+9), 10.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
@@ -374,7 +362,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
         //Place into the boxy thing
 
         //LEFT TURN TO FACE CRYPTOBOX
-        encoderDrive(TURN_SPEED, -11.5, 12, 6.0);
+        encoderDrive(TURN_SPEED, -12, 12, 6.0);
 
         //FORWARD ## INCHES INTO CRYPTOBOX
         encoderDrive(DRIVE_SPEED*2.5, 11, 11, 10.0);
@@ -410,75 +398,60 @@ public class SEAuton_3Glyph extends LinearOpMode {
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         //IMU inits
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity  = imu.getGravity();
         encoderDrive(DRIVE_SPEED*3, 10,10,5);
         encoderDrive(DRIVE_SPEED, -3,-3,3.0);
-        if (angles.secondAngle > 1) {
-            while (angles.secondAngle > 1) {
-                rightDrive.setPower(-DRIVE_SPEED);
-            }
-        }if (angles.secondAngle < -1) {
-            while (angles.secondAngle < -1){
-                leftDrive.setPower(-DRIVE_SPEED);
-            }
-        }else {
-            leftDrive.setPower(0);
-            rightDrive.setPower(0);
-        }
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
         moveArm(DRIVE_SPEED*3,3500,10);
         encoderDrive(DRIVE_SPEED*4,-20,-20,10);
         encoderDrive(DRIVE_SPEED*2,24,-24,10);
-        while (gravity.yAccel > 3){
-            rightDrive.setPower(0.5);
-            leftDrive.setPower(0.5);
-        }
-        rightDrive.setPower(0);
-        leftDrive.setPower(0);
-        leftGrab.setPosition(leftPushPos);
-        rightGrab.setPosition(rightPushPos);
-        leftGrab2.setPosition(leftPushPos2);
-        rightGrab2.setPosition(rightPushPos2);
-        encoderDrive(DRIVE_SPEED,-0.5,-0.5,10);
-        sleep(500);
-        encoderDrive(DRIVE_SPEED,4,4,10);
-        leftGrab.setPosition(leftClosePos);
-        rightGrab.setPosition(rightClosePos);
-        leftGrab2.setPosition(leftClosePos2);
-        rightGrab2.setPosition(rightClosePos2);
-        encoderDrive(DRIVE_SPEED,-15,-15,10);
-        if (angles.secondAngle > 1) {
-            while (angles.secondAngle > 1) {
-                rightDrive.setPower(-DRIVE_SPEED);
-                leftDrive.setPower(DRIVE_SPEED);
-            }
-        }if (angles.secondAngle < -1) {
-            while (angles.secondAngle < -1){
-                leftDrive.setPower(-DRIVE_SPEED);
-                rightDrive.setPower(DRIVE_SPEED);
-            }
-        }else {
-            leftDrive.setPower(0);
-            rightDrive.setPower(0);
-        }
-        encoderDrive(DRIVE_SPEED*3,50,50,10);
+        encoderDrive(DRIVE_SPEED*3,19,19[],10);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
         leftGrab2.setPosition(leftOpenPos2);
         rightGrab2.setPosition(rightOpenPos2);
-        encoderDrive(DRIVE_SPEED*5,-5,-5,10);
-        moveArm(DRIVE_SPEED*2,2500,10);
+        encoderDrive(DRIVE_SPEED*5,-2,-2,10);
+        leftGrab.setPosition(leftPushPos);
+        rightGrab.setPosition(rightPushPos);
+        leftGrab2.setPosition(leftPushPos2);
+        rightGrab2.setPosition(rightPushPos2);
+        encoderDrive(DRIVE_SPEED,5,5,10);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
-        encoderDrive(DRIVE_SPEED*4,20,20,10);
-        encoderDrive(DRIVE_SPEED*3,-3,-3,10);
-
-
+        moveArm(1,4500,10);
+        encoderDrive(DRIVE_SPEED*4,-60,-60,10);
+        encoderDrive(1,49,49,10);
+        encoderDrive(DRIVE_SPEED,-24,24,10);
+        encoderDrive(DRIVE_SPEED*3,60,60,10);
+        leftGrab.setPosition(leftOpenPos);
+        rightGrab.setPosition(rightOpenPos);
+        leftGrab2.setPosition(leftOpenPos2);
+        rightGrab2.setPosition(rightOpenPos2);
+        encoderDrive(0.5,-5,-5,10);
+        leftGrab.setPosition(leftClosePos);
+        rightGrab.setPosition(rightClosePos);
+        leftGrab2.setPosition(leftClosePos2);
+        rightGrab2.setPosition(rightClosePos2);
+        encoderDrive(0.5,7,7,10);
+        encoderDrive(DRIVE_SPEED,-3,-3,10);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
