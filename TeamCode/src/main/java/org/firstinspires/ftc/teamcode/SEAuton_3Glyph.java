@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -142,6 +143,13 @@ public class SEAuton_3Glyph extends LinearOpMode {
     double leftPushPos2 = 0.60;
     double rightPushPos2 = 0.12;
 
+    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+
+    private double integratedYAxis = 0;
+    private double lastRoll = 0;
+
     boolean grabberClosed;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -169,7 +177,23 @@ public class SEAuton_3Glyph extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity  = imu.getGravity();
 
         armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
@@ -323,36 +347,35 @@ public class SEAuton_3Glyph extends LinearOpMode {
             telemetry.addData("VuMark", "not visible");
         }
 
-        //BACKWARDS OF THE BALANCE STONE
-        encoderDrive(DRIVE_SPEED, -20, -20, 10.0);
+        //BACKWARDS OFF THE BALANCE STONE
+        gyroDrive(DRIVE_SPEED,-23,0.0);
         //FORWARDS TO ALIGN WITH BALANCE STONE
-        encoderDrive(DRIVE_SPEED, 10, 10, 5.0);
+        gyroDrive(DRIVE_SPEED,6,0.0);
         sleep(250);
 
 
 
         //VUMARK PATHS
-
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
             if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 //BACKWARDS ## INCHES TO LINE UP WITH RIGHT COLUMN
                 //Changed 4+8 to 4+9 due to missing slightly to the right. Need to go further on right vumark.
-                encoderDrive(DRIVE_SPEED*1.2, -(5+9), -(5+9), 10.0);
+                gyroDrive(DRIVE_SPEED,-13,0.0);
                 caseVumark = 'C';
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED, -(12+9), -(12+9), 10.0);
+                gyroDrive(DRIVE_SPEED*1.3,-20,0.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
                 //Backwards # of inches
-                encoderDrive(DRIVE_SPEED*1.5, -(20.5+9), -(20.5+9), 10.0);
+                gyroDrive(DRIVE_SPEED*1.5,-28,0.0);
                 caseVumark = 'R';
             }
             else caseVumark = '?';
         } else {
-            encoderDrive(DRIVE_SPEED, -(12+9), -(12+9), 10.0);
+            gyroDrive(DRIVE_SPEED*1.3,-20,0.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
@@ -362,10 +385,10 @@ public class SEAuton_3Glyph extends LinearOpMode {
         //Place into the boxy thing
 
         //LEFT TURN TO FACE CRYPTOBOX
-        encoderDrive(TURN_SPEED, -12, 12, 6.0);
+        gyroTurn(DRIVE_SPEED,90);
 
         //FORWARD ## INCHES INTO CRYPTOBOX
-        encoderDrive(DRIVE_SPEED*2.5, 11, 11, 10.0);
+        gyroDrive(DRIVE_SPEED*2,10,90);
 
         /* SAVE THIS BECAUSE IT"S MESSED UP ABOVE
         encoderDrive(DRIVE_SPEED, -25, -25, 10.0);
@@ -392,66 +415,44 @@ public class SEAuton_3Glyph extends LinearOpMode {
         rightGrab.setPosition(rightOpenPos);
         sleep(500);     // pause for servos to move
 
-        encoderDrive(DRIVE_SPEED*4, -7,-7,3.0);
+        gyroDrive(DRIVE_SPEED*4,7,90);
 
         moveArm(DRIVE_SPEED*3,300,5);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
-        //IMU inits
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        gravity  = imu.getGravity();
-        encoderDrive(DRIVE_SPEED*3, 10,10,5);
-        encoderDrive(DRIVE_SPEED, -3,-3,3.0);
-        leftGrab.setPosition(leftOpenPos);
-        rightGrab.setPosition(rightOpenPos);
+        gyroDrive(DRIVE_SPEED*3, 10,90);
+        gyroDrive(DRIVE_SPEED*3,-20,90);
+        gyroTurn(DRIVE_SPEED,-90);
         moveArm(DRIVE_SPEED*3,3500,10);
-        encoderDrive(DRIVE_SPEED*4,-20,-20,10);
-        encoderDrive(DRIVE_SPEED*2,24,-24,10);
-        encoderDrive(DRIVE_SPEED*3,19,19[],10);
-        leftGrab.setPosition(leftOpenPos);
-        rightGrab.setPosition(rightOpenPos);
-        leftGrab2.setPosition(leftOpenPos2);
-        rightGrab2.setPosition(rightOpenPos2);
-        encoderDrive(DRIVE_SPEED*5,-2,-2,10);
         leftGrab.setPosition(leftPushPos);
         rightGrab.setPosition(rightPushPos);
         leftGrab2.setPosition(leftPushPos2);
         rightGrab2.setPosition(rightPushPos2);
-        encoderDrive(DRIVE_SPEED,5,5,10);
+        gyroDrive(DRIVE_SPEED*3,35,90);
+        encoderDrive(DRIVE_SPEED,-0.5,-0.5,10);
+        sleep(500);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
-        moveArm(1,4500,10);
-        encoderDrive(DRIVE_SPEED*4,-60,-60,10);
-        encoderDrive(1,49,49,10);
-        encoderDrive(DRIVE_SPEED,-24,24,10);
-        encoderDrive(DRIVE_SPEED*3,60,60,10);
+        moveArm(1,5000,10);
+        gyroDrive(DRIVE_SPEED*4,-18,90);
+        gyroTurn(DRIVE_SPEED*1.5,-90);
+        gyroDrive(DRIVE_SPEED*4,45,-90);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
         leftGrab2.setPosition(leftOpenPos2);
         rightGrab2.setPosition(rightOpenPos2);
-        encoderDrive(0.5,-5,-5,10);
+        gyroDrive(DRIVE_SPEED*2,-7,-90);
+        moveArm(DRIVE_SPEED*2,3500,10);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
-        encoderDrive(0.5,7,7,10);
-        encoderDrive(DRIVE_SPEED,-3,-3,10);
+        gyroDrive(DRIVE_SPEED*4,10,-90);
+        gyroDrive(DRIVE_SPEED*5,-3,-90);
+
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -526,7 +527,6 @@ public class SEAuton_3Glyph extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
             armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
@@ -562,5 +562,157 @@ public class SEAuton_3Glyph extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle) {
+
+        int     newLeftTarget;
+        int     newRightTarget;
+        int     moveCounts;
+        double  max;
+        double  error;
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int)(distance * COUNTS_PER_INCH);
+            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
+            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+
+            // Set Target and Turn On RUN_TO_POSITION
+            robot.leftDrive.setTargetPosition(newLeftTarget);
+            robot.rightDrive.setTargetPosition(newRightTarget);
+
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            robot.leftDrive.setPower(speed);
+            robot.rightDrive.setPower(speed);
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opModeIsActive() &&
+                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+
+                // adjust relative speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0)
+                    steer *= -1.0;
+
+                leftSpeed = speed - steer;
+                rightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0)
+                {
+                    leftSpeed /= max;
+                    rightSpeed /= max;
+                }
+
+                robot.leftDrive.setPower(leftSpeed);
+                robot.rightDrive.setPower(rightSpeed);
+
+                // Display drive status for the driver.
+                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+                telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
+                telemetry.addData("Actual",  "%7d:%7d",      robot.leftDrive.getCurrentPosition(),
+                        robot.rightDrive.getCurrentPosition());
+                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.leftDrive.setPower(0);
+            robot.rightDrive.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+    public void gyroTurn (  double speed, double angle) {
+
+        // keep looping while we are still active, and not on heading.
+        while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+    }
+    boolean onHeading(double speed, double angle, double PCoeff) {
+        double   error ;
+        double   steer ;
+        boolean  onTarget = false ;
+        double leftSpeed;
+        double rightSpeed;
+
+        // determine turn power based on +/- error
+        error = getError(angle);
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            steer = 0.0;
+            leftSpeed  = 0.0;
+            rightSpeed = 0.0;
+            onTarget = true;
+        }
+        else {
+            steer = getSteer(error, PCoeff);
+            rightSpeed  = speed * steer;
+            leftSpeed   = -rightSpeed;
+        }
+
+        // Send desired speeds to motors.
+        robot.leftDrive.setPower(leftSpeed);
+        robot.rightDrive.setPower(rightSpeed);
+
+        // Display it for the driver.
+        telemetry.addData("Target", "%5.2f", angle);
+        telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+        telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+
+        return onTarget;
+    }
+    public double getError(double targetAngle) {
+
+        double robotError;
+
+        // calculate error in -179 to +180 range  (
+        robotError = targetAngle - angles.secondAngle;
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+    public double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
+    }
+    double getIntegratedYAxis() {
+
+        double newRoll = angles.secondAngle;
+
+        double deltaRoll = newRoll - lastRoll;
+
+        if (deltaRoll < -180) {
+            deltaRoll += 360;
+        } else if (deltaRoll >= 180) {
+            deltaRoll -= 360;
+        }
+        integratedYAxis = integratedYAxis + deltaRoll;
+
+        lastRoll = newRoll;
+
+        return integratedYAxis;
+    }
+    void resetYAxis() {
+
+        lastRoll = angles.secondAngle;
+        integratedYAxis = 0;
     }
 }

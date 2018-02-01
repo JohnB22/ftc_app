@@ -45,19 +45,9 @@ public class Drift extends LinearOpMode {
 
 
             Power = gamepad1.right_trigger - gamepad1.left_trigger;
-            if (!gamepad1.right_bumper){
-                Power = Range.scale(Power, -1,1,-0.5,0.5);
-            }if (gamepad1.right_bumper){
-                Power = Range.scale (Power, -1,1,-0.75,0.75);
-            }
+            Power = Range.scale(Power, -1,1,-0.5,0.5);
             rightDrive.setPower(Power);
             leftDrive.setPower(Power);
-
-            if (gamepad1.left_stick_x > 1){
-                rightDrive.setPower(Power+0.25);
-            }if (gamepad1.left_stick_x < -1){
-                leftDrive.setPower(Power+0.25);
-            }
 
 
 
