@@ -158,7 +158,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+                                                      (WHEEL_DIAMETER_INCHES * 3.1415926535897932384626);
     static final double     DRIVE_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.15;
 
@@ -409,47 +409,72 @@ public class SEAuton_3Glyph extends LinearOpMode {
         */
 
 
-        //RELEASE AND BACK UP
+        //Ensure that the glyph is in the column
         sleep(500);
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
         sleep(500);     // pause for servos to move
-
-        gyroDrive(DRIVE_SPEED*4,7,90);
-
+        //Drive back for servos to close
+        gyroDrive(DRIVE_SPEED*4,-7,90);
+        //Move the arm lower in order to push one block.
         moveArm(DRIVE_SPEED*3,300,5);
+        //Close servos to push glyph in.
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
+
+        //Push Glyph in.
         gyroDrive(DRIVE_SPEED*3, 10,90);
+
+        //Back up to get more glyphs.
         gyroDrive(DRIVE_SPEED*3,-20,90);
+        //Turn the robot towards the glyphs.
         gyroTurn(DRIVE_SPEED,-90);
+        //Move the arm up to show both grabbers
         moveArm(DRIVE_SPEED*3,3500,10);
+        //Set the servos to the pushing position in order to push extra glyphs out of the way.
         leftGrab.setPosition(leftPushPos);
         rightGrab.setPosition(rightPushPos);
         leftGrab2.setPosition(leftPushPos2);
         rightGrab2.setPosition(rightPushPos2);
-        gyroDrive(DRIVE_SPEED*3,35,90);
+        //Drive into the glyphs while holding the -90 degree angle.
+        gyroDrive(DRIVE_SPEED*3,35,-90);
+        //Use encoders to back up half an inch in order to not get the rubber bands caught on the extra glyphs.
         encoderDrive(DRIVE_SPEED,-0.5,-0.5,10);
+        //pause so servos don't move immediately after
         sleep(500);
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
+        //Pause for servos to move.
+        sleep (500);
+        //Pick up the glyphs so they don't drag on the ground.
         moveArm(1,5000,10);
-        gyroDrive(DRIVE_SPEED*4,-18,90);
-        gyroTurn(DRIVE_SPEED*1.5,-90);
-        gyroDrive(DRIVE_SPEED*4,45,-90);
+        //Back up 18 inches in order to be clear of the glyphs when turning.
+        gyroDrive(DRIVE_SPEED*4,-18,-90);
+        //Turn to face cryptobox.
+        gyroTurn(DRIVE_SPEED*1.5,90);
+        //Drive into cryptobox.
+        gyroDrive(DRIVE_SPEED*4,45,90);
+        //Open the servos
         leftGrab.setPosition(leftOpenPos);
         rightGrab.setPosition(rightOpenPos);
         leftGrab2.setPosition(leftOpenPos2);
         rightGrab2.setPosition(rightOpenPos2);
-        gyroDrive(DRIVE_SPEED*2,-7,-90);
-        moveArm(DRIVE_SPEED*2,3500,10);
+        //pause for servos to move.
+        sleep(750);
+        //Back up to move servos.
+        gyroDrive(DRIVE_SPEED*2,-7,90);
+        //Move the arm lower in case the glyphs dropped.
+        moveArm(DRIVE_SPEED*2,4200,10);
+        //Close servos to push in glyphs.
         leftGrab.setPosition(leftClosePos);
         rightGrab.setPosition(rightClosePos);
         leftGrab2.setPosition(leftClosePos2);
         rightGrab2.setPosition(rightClosePos2);
+        //Push in glyphs.
         gyroDrive(DRIVE_SPEED*4,10,-90);
+        //Back up GP ;))
         gyroDrive(DRIVE_SPEED*5,-3,-90);
 
 
@@ -580,24 +605,24 @@ public class SEAuton_3Glyph extends LinearOpMode {
         if (opModeIsActive()) {
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightDrive.getCurrentPosition() + moveCounts;
+            newLeftTarget = leftDrive.getCurrentPosition() + moveCounts;
+            newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.leftDrive.setTargetPosition(newLeftTarget);
-            robot.rightDrive.setTargetPosition(newRightTarget);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
 
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.leftDrive.setPower(speed);
-            robot.rightDrive.setPower(speed);
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -618,25 +643,25 @@ public class SEAuton_3Glyph extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.leftDrive.setPower(leftSpeed);
-                robot.rightDrive.setPower(rightSpeed);
+                leftDrive.setPower(leftSpeed);
+                rightDrive.setPower(rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
                 telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.leftDrive.getCurrentPosition(),
-                        robot.rightDrive.getCurrentPosition());
+                telemetry.addData("Actual",  "%7d:%7d",      leftDrive.getCurrentPosition(),
+                        rightDrive.getCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.leftDrive.setPower(0);
-            robot.rightDrive.setPower(0);
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
     public void gyroTurn (  double speed, double angle) {
@@ -670,8 +695,8 @@ public class SEAuton_3Glyph extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.leftDrive.setPower(leftSpeed);
-        robot.rightDrive.setPower(rightSpeed);
+        leftDrive.setPower(leftSpeed);
+        rightDrive.setPower(rightSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);
