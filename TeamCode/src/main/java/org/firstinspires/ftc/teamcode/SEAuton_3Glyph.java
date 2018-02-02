@@ -350,7 +350,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
         //BACKWARDS OFF THE BALANCE STONE
         gyroDrive(DRIVE_SPEED,-23,0.0);
         //FORWARDS TO ALIGN WITH BALANCE STONE
-        gyroDrive(DRIVE_SPEED,6,0.0);
+        gyroDrive(DRIVE_SPEED,10,0.0);
         sleep(250);
 
 
@@ -365,7 +365,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
             }
             else if (vuMark == RelicRecoveryVuMark.CENTER) {
                 //Backwards # of inches
-                gyroDrive(DRIVE_SPEED*1.3,-20,0.0);
+                gyroDrive(DRIVE_SPEED*1.3,-21,0.0);
                 caseVumark = 'L';
             }
             else if (vuMark == RelicRecoveryVuMark.LEFT) {
@@ -375,7 +375,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
             }
             else caseVumark = '?';
         } else {
-            gyroDrive(DRIVE_SPEED*1.3,-20,0.0);
+            gyroDrive(DRIVE_SPEED*1.3,-21,0.0);
         }
 
         telemetry.addData("VuMarkSpecial", "%s is the one", caseVumark);
@@ -667,9 +667,12 @@ public class SEAuton_3Glyph extends LinearOpMode {
     public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
-        while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+        if (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
+        }else {
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
         }
     }
     boolean onHeading(double speed, double angle, double PCoeff) {
@@ -691,7 +694,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
         else {
             steer = getSteer(error, PCoeff);
             rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
+            leftSpeed   = -(rightSpeed);
         }
 
         // Send desired speeds to motors.
@@ -710,7 +713,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
         double robotError;
 
         // calculate error in -179 to +180 range  (
-        robotError = targetAngle - angles.secondAngle;
+        robotError = targetAngle - angles.firstAngle;
         while (robotError > 180)  robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
@@ -720,7 +723,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
     }
     double getIntegratedYAxis() {
 
-        double newRoll = angles.secondAngle;
+        double newRoll = angles.firstAngle;
 
         double deltaRoll = newRoll - lastRoll;
 
@@ -737,7 +740,7 @@ public class SEAuton_3Glyph extends LinearOpMode {
     }
     void resetYAxis() {
 
-        lastRoll = angles.secondAngle;
+        lastRoll = angles.firstAngle;
         integratedYAxis = 0;
     }
 }
